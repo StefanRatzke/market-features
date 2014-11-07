@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns ="http://www.w3.org/1999/xhtml">
+<head><meta content="text/html;charset=utf-8"/>
+<title>C7 Functional Tests</title>
+
+<style type="text/css">
+body {
+  font-size: 0px;
+  color: white;
+  margin: 0px;
+  padding: 0px;
+}
+.market-feature, td, th {
+  font: normal 11px "Lucida Grande", Helvetica, sans-serif;
+  background: white;
+  color: black;
+}
+.market-feature #market-feature-header, td #market-feature-header, th #market-feature-header {
+  background: #65c400;
+  color: white;
+  height: 6em;
+}
+.market-feature h1, td h1, th h1 {
+  margin: 0px 10px 0px 10px;
+  padding: 10px;
+  font-family: "Lucida Grande", Helvetica, sans-serif;
+  font-size: 2em;
+  position: absolute;
+}
+.market-feature div.market-feature, td div.market-feature, th div.market-feature {
+  padding: 2px;
+  margin: 0px 10px 5px 10px;
+}
+.market-feature .test_name, td .test_name, th .test_name {
+  float: left;
+}
+.market-feature .test_file, td .test_file, th .test_file {
+  text-align: right;
+  color: #999999;
+}
+.market-feature ol, td ol, th ol {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+.market-feature ol li.test, td ol li.test, th ol li.test {
+  padding: 3px 3px 3px 18px;
+  margin: 5px 0px 5px 5px;
+}
+.market-feature ol li.failed, td ol li.failed, th ol li.failed {
+  border-left: 5px solid #c20000;
+  border-bottom: 1px solid #c20000;
+  background: #fffbd3;
+  color: #c20000;
+}
+.market-feature ol li.passed, td ol li.passed, th ol li.passed {
+  border-left: 5px solid #65c400;
+  border-bottom: 1px solid #65c400;
+  background: #dbffb4;
+  color: #3d7700;
+}
+.market-feature #summary, td #summary, th #summary {
+  margin: 0px;
+  padding: 5px 10px;
+  text-align: right;
+  top: 0px;
+  right: 0px;
+  float: right;
+}
+.market-feature #summary p, td #summary p, th #summary p {
+  margin: 0 0 0 2px;
+}
+</style>
+</head>
+
+<body>
+	<div class="market-feature">
+		<div id="market-feature-header">
+			<div id="title">
+				<h1>C7 Functional Tests</h1>
+			</div>
+			<div id="summary">
+				<p>{{number_of_passed_market_features}} green market features (out of {{total_number_of_market_features}})</p>
+				<p>{{number_of_passed_tests}} green tests (out of {{total_number_of_tests}})</p>
+			</div>
+		</div>
+	{% for result in results %} 
+		<div class="market-feature">
+			<h2>
+				<span class="val">
+					{{result.name}}
+				</span>
+			</h2>
+	{% for test in result.tests %}
+			<div class='market_feature'>
+				<ol>
+					<li id='test_1' class='{{test.result}}'>
+						<div class="test_name">
+							<span class="keyword">
+								{{test.message}}
+							</span>
+						</div>
+						<div class="test_file">
+							<span>{{test.name}}</span>
+						</div>
+					</li>
+				</ol>
+			</div>
+	{% endfor %}
+		</div>
+	{% endfor %}
+	</div>	
+</body>
+</html>
