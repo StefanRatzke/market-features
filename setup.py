@@ -4,7 +4,7 @@ setup(
     name='market-features',
     version='0.1',
     author='Stefan Ratzke',
-    author_email = '',
+    author_email = 'stefan-ratzke@t-online.de',
     url = 'https://github.com/StefanRatzke/nose-market-features',
     packages=['market_features'],
     description = 'Create HTML Test Results Report',
