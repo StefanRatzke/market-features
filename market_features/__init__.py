@@ -1,5 +1,6 @@
 import os
 from nose.plugins.base import Plugin
+import nose.plugins.base
 from jinja2 import Environment, FileSystemLoader
 
 class MarketFeatures(Plugin):
@@ -13,14 +14,8 @@ class MarketFeatures(Plugin):
    
     def begin(self):
         self.results = {"results":[]}
+        print("begin")
          
-#     def options(self,parser,env=os.environ):
-#         super(MarketFeatures,self).options(parser,env=env)
-#     
-#     def configure(self, options, conf):
-#         super(MarketFeatures, self).configure(options,conf)
-#         if not self.enabled:
-#             return
 
     def help(self):
         return "provide summery report of executed tests listed per market feature"
@@ -44,6 +39,9 @@ class MarketFeatures(Plugin):
                   output_file.write(report)
         
     def report_test(self, pre, test,err=None):
+        if not isinstance(test,nose.case.Test):
+            return
+        
         address = test.address()
         message = test.shortDescription() if test.shortDescription() else str(address[-1]).split('.')[-1]
         market_feature = self.__extract_market_feature(address)
