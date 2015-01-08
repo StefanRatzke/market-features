@@ -1,8 +1,8 @@
 import os
+import sys
 from nose.plugins.base import Plugin
 import nose.plugins.base
 from jinja2 import Environment, FileSystemLoader
-
 class MarketFeatures(Plugin):
     '''
     provide summery report of executed tests listed per market feature
@@ -50,12 +50,18 @@ class MarketFeatures(Plugin):
                 test = {'result': pre, 'name' : str(address[1:]), 'message' : message}
                 result['tests'].append(test)
                 break
-        else:
-            result = {'name':market_feature, 'tests' : []}
+        else:                 
+            result = {'name':market_feature, 'description': self.__extract_market_feature_description(test), 'tests' : []}
             test = {'result': pre, 'name' : str(address[1:]), 'message' : message}
             result['tests'].append(test)
             self.results['results'].append(result)
     
+    def __extract_market_feature_description(self,test):
+        try :
+           return    sys.modules[sys.modules[test.context.__module__].__package__].__doc__
+        except KeyError:
+            return None
+        
     def __extract_market_feature(self, address):
         path = address[0]
         snakecase_result = os.path.split(os.path.dirname(os.path.abspath(path)))[1]

@@ -70,6 +70,10 @@ body {
 .market-feature #summary p, td #summary p, th #summary p {
   margin: 0 0 0 2px;
 }
+.market-feature #description p{
+ margin: 30px;
+ font-size:1.2em;
+}
 </style>
 </head>
 
@@ -91,6 +95,11 @@ body {
 					{{result.name}}
 				</span>
 			</h2>
+	{% if result.description %}
+			<div id="description">
+				<p>{{result.description}}</p>
+			</div>
+	{% endif%}
 	{% for test in result.tests %}
 			<div class='market_feature'>
 				<ol>
