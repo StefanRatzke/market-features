@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='market-features',
@@ -6,6 +6,7 @@ setup(
     author='Stefan Ratzke',
     author_email = 'stefan-ratzke@t-online.de',
     url = 'https://github.com/StefanRatzke/market-features',
+    download_url = 'https://github.com/StefanRatzke/market-features/tarball/0.1',
     packages=['market_features'],
     description = 'Create HTML Test Results Report',
     license = '',
