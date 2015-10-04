@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 from nose.plugins.base import Plugin
@@ -9,11 +10,14 @@ class MarketFeatures(Plugin):
     '''
     name='market-features'
     def __init__(self):
+
         super(MarketFeatures, self).__init__()
+        print "running modified verision"
 
    
     def begin(self):
         self.results = {"results":[]}
+        print "running modified verision"
         print("begin")
          
 
@@ -24,10 +28,10 @@ class MarketFeatures(Plugin):
         self.report_test("test failed", test,err)
     
     def addFailure(self, test, err, capt=None, tb_info=None):
-        self.report_test("test failed", test,err)
+        self.report_test("test failed", test, err)
 
     def addSuccess(self, test, capt=None):
-        self.report_test("test passed", test)
+        self.report_test("test passed", test, err=None)
     
     def finalize(self, result):
         self.results['total_number_of_market_features'] = self.__get_total_number_of_market_features()
@@ -38,21 +42,24 @@ class MarketFeatures(Plugin):
         with open("market_features.html","w") as output_file:
                   output_file.write(report)
         
-    def report_test(self, pre, test,err=None):
-        if not isinstance(test,nose.case.Test):
+    def report_test(self, pre, test, err):
+        if not isinstance(test, nose.case.Test):
             return
-        
+
+        err_msg = None
+        if err:
+            err_msg = str(err)
         address = test.address()
         message = test.shortDescription() if test.shortDescription() else str(address[-1]).split('.')[-1]
         market_feature = self.__extract_market_feature(address)
         for result in self.results['results']:
             if  result['name'] == market_feature:
-                test = {'result': pre, 'name' : str(address[1:]), 'message' : message}
+                test = {'result': pre, 'name' : str(address[1:]), 'message' : message, 'err_msg': err_msg}
                 result['tests'].append(test)
                 break
         else:                 
             result = {'name':market_feature, 'description': self.__extract_market_feature_description(test), 'tests' : []}
-            test = {'result': pre, 'name' : str(address[1:]), 'message' : message}
+            test = {'result': pre, 'name' : str(address[1:]), 'message' :  message, 'err_msg': err_msg}
             result['tests'].append(test)
             self.results['results'].append(result)
     
@@ -103,6 +110,8 @@ class MarketFeatures(Plugin):
         env.filters['ignore_empty_elements'] = self.__ignore_empty_elements
         templates_path = os.path.dirname(os.path.abspath(__file__ ))
         env = Environment(loader=FileSystemLoader(templates_path))
+
+        print json.dumps(self.results['results'], indent=True)
 
         template = env.get_template(name + ".jinja")
         return template.render(data)
