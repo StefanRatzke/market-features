@@ -17,14 +17,17 @@ class MarketFeatures(Plugin):
 
         super(MarketFeatures, self).__init__()
         self.results = {"results": []}
+        self.exceptions = {'exceptions': []}
 
-    def begin(self):
+    @staticmethod
+    def begin():
         print("begin")
 
     def help(self):
         return "provide summery report of executed tests listed per market feature"
 
     def addError(self, test, err, capt=None):
+        self.exceptions['exceptions'].append(str(err))
         self.report_test("test failed", test, err)
 
     def addFailure(self, test, err, capt=None, tb_info=None):
@@ -38,10 +41,9 @@ class MarketFeatures(Plugin):
         self.results['total_number_of_tests'] = self.__get_total_number_of_tests()
         self.results['number_of_passed_market_features'] = self.__get_number_of_passed_market_features()
         self.results['number_of_passed_tests'] = self.__get_number_of_passed_tests()
-
         total_no_of_errors = self.__get_total_number_of_tests() - self.__get_number_of_passed_tests()
         self.results['total_no_of_errors'] = total_no_of_errors
-
+        self.results['total_exceptions'] = len(self.exceptions['exceptions'])
         report = self.__render_template("market_features.html", self.results)
         with open("market_features.html", "w") as output_file:
             output_file.write(report)

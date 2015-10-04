@@ -94,10 +94,17 @@ body {
 				<p>{{number_of_passed_tests}} green tests (out of {{total_number_of_tests}})</p>
 				{% if total_no_of_errors %}
 				<div id='failures'>
-				  <p> {{total_no_of_errors}} total errors</p>
+				  <p> {{total_no_of_errors}} <a href=#err_id>failed test(s)</a></p>
 				 </div>
 				 {% endif%}
-			</div>
+			   </div>
+			   {% if total_exceptions %}
+               				<div id='failures'>
+               				  <p> {{total_exceptions}} total exceptions</p>
+               				 </div>
+               				 {% endif%}
+               			   </div>
+
 		</div>
 	{% for result in results %} 
 		<div class="market-feature">
