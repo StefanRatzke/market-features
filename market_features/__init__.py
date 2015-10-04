@@ -8,19 +8,17 @@ from jinja2 import Environment, FileSystemLoader
 
 
 class MarketFeatures(Plugin):
-    '''
+    """
     provide summery report of executed tests listed per market feature
-    '''
+    """
     name = 'market-features'
 
     def __init__(self):
 
         super(MarketFeatures, self).__init__()
-        print "running modified verision"
+        self.results = {"results": []}
 
     def begin(self):
-        self.results = {"results": []}
-        print "running modified verision"
         print("begin")
 
     def help(self):
@@ -40,6 +38,10 @@ class MarketFeatures(Plugin):
         self.results['total_number_of_tests'] = self.__get_total_number_of_tests()
         self.results['number_of_passed_market_features'] = self.__get_number_of_passed_market_features()
         self.results['number_of_passed_tests'] = self.__get_number_of_passed_tests()
+
+        total_no_of_errors = self.__get_total_number_of_tests() - self.__get_number_of_passed_tests()
+        self.results['total_no_of_errors'] = total_no_of_errors
+
         report = self.__render_template("market_features.html", self.results)
         with open("market_features.html", "w") as output_file:
             output_file.write(report)
@@ -94,7 +96,7 @@ class MarketFeatures(Plugin):
         for result in self.results['results']:
             for test in result['tests']:
                 if "failed" in test['result']:
-                    break;
+                    break
             else:
                 number_of_passed_market_features += 1
 

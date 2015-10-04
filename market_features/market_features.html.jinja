@@ -70,6 +70,12 @@ body {
 .market-feature #summary p, td #summary p, th #summary p {
   margin: 0 0 0 2px;
 }
+
+.market-feature #failures p, td #failures p, th #failures p {
+  margin: 0 0 0 2px;
+  color: red;
+}
+
 .market-feature #description p{
  margin: 30px;
  font-size:1.2em;
@@ -86,6 +92,11 @@ body {
 			<div id="summary">
 				<p>{{number_of_passed_market_features}} green market features (out of {{total_number_of_market_features}})</p>
 				<p>{{number_of_passed_tests}} green tests (out of {{total_number_of_tests}})</p>
+				{% if total_no_of_errors %}
+				<div id='failures'>
+				  <p> {{total_no_of_errors}} total errors</p>
+				 </div>
+				 {% endif%}
 			</div>
 		</div>
 	{% for result in results %} 
