@@ -20,6 +20,12 @@ body {
   color: white;
   height: 6em;
 }
+
+.market-feature #market-feature-header-failed, td #market-feature-header-failed, th #market-feature-header-failed {
+  background: red;
+  color: white;
+  height: 6em;
+}
 .market-feature h1, td h1, th h1 {
   margin: 0px 10px 0px 10px;
   padding: 10px;
@@ -85,7 +91,11 @@ body {
 
 <body>
 	<div class="market-feature">
+	{% if total_no_of_errors %}
+	    <div id="market-feature-header-failed">
+	     {% else%}
 		<div id="market-feature-header">
+		   {% endif%}
 			<div id="title">
 				<h1>C7 Functional Tests</h1>
 			</div>
