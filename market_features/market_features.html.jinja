@@ -109,15 +109,14 @@ body {
 								{{test.message}}
 							</span>
 						</div>
-                        {% if test.err_msg %}
-						<div id ='err_id'>
-						 <br> {{test.err_msg}} </br>
-						  </div>
-
-						  	{% endif%}
 						<div class="test_file">
 							<span>{{test.name}}</span>
 						</div>
+                            {% if test.err_msg %}
+                        	    <div id ='err_id'>
+                        		    <br> {{test.err_msg}} </br>
+                        	    </div>
+                         {% endif%}
 					</li>
 				</ol>
 			</div>
