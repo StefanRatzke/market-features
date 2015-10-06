@@ -21,10 +21,23 @@ body {
   height: 6em;
 }
 
+.market-feature #failed, th #failed {
+   text-align: right;
+   background: red;
+   color: white;
+ }
+ .market-feature ol li.failed, td ol li.failed, th ol li.failed{
+   border-left: 5px solid #c20000;
+   border-bottom: 1px solid #c20000;
+   background: #fffbd3;
+   color: #c20000;
+ }
+
 .market-feature #market-feature-header-failed, td #market-feature-header-failed, th #market-feature-header-failed {
-  background: red;
-  color: white;
   height: 6em;
+  border-bottom: 1px solid #c20000;
+  background: #fffbd3;
+  color: #c20000;
 }
 .market-feature h1, td h1, th h1 {
   margin: 0px 10px 0px 10px;
@@ -65,6 +78,61 @@ body {
   background: #dbffb4;
   color: #3d7700;
 }
+.rTable { display: table; }
+.rTableRow { display: table-row; }
+.rTableHeading { display: table-header-group; }
+.rTableBody { display: table-row-group; }
+.rTableFoot { display: table-footer-group; }
+.rTableCell, .rTableHead { display: table-cell;}
+
+.rTable {
+	display: table;
+	border-collapse: collapse;
+    margin: 0px;
+    text-align: right;
+    top: 0px;
+    right: 0px;
+    float: right;
+	}
+
+.rTableRow {
+	display: table-row;
+	 }
+.rTableHeading {
+	 display: table-header-group;
+	 background-color: #ddd;
+	 }
+.rTableCell, .rTableHead
+	{
+	display: table-cell;
+	padding: 3px 10px;
+	border: 0px solid #999999;
+	}
+
+.rTableCellFailed, .rTableHeadFailed
+	{
+	display: table-cell;
+	padding: 3px 10px;
+	border: 0px solid #999999;
+	background:red;
+	}
+
+.rTableHeading {
+	display: table-header-group;
+	background-color: #ddd;
+	font-weight: bold;
+	}
+.rTableFoot {
+	display: table-footer-group;
+	font-weight: bold;
+	background-color: #ddd;
+	}
+
+.rTableBody {
+	display: table-row-group;
+	}
+
+
 .market-feature #summary, td #summary, th #summary {
   margin: 0px;
   padding: 5px 10px;
@@ -72,51 +140,67 @@ body {
   top: 0px;
   right: 0px;
   float: right;
+
 }
 .market-feature #summary p, td #summary p, th #summary p {
   margin: 0 0 0 2px;
-}
-
-.market-feature #failures p, td #failures p, th #failures p {
-  margin: 0 0 0 2px;
-  color: red;
 }
 
 .market-feature #description p{
  margin: 30px;
  font-size:1.2em;
 }
+.market-feature #exception p{
+ margin: 30px;
+ border-left: 5px solid #c20000;
+ border-bottom: 1px solid #c20000;
+ background: #fffbd3;
+ color: #c20000;
+}
+
 </style>
 </head>
 
 <body>
 	<div class="market-feature">
-	{% if total_no_of_errors %}
-	    <div id="market-feature-header-failed">
-	     {% else%}
 		<div id="market-feature-header">
-		   {% endif%}
 			<div id="title">
 				<h1>C7 Functional Tests</h1>
 			</div>
-			<div id="summary">
-				<p>{{number_of_passed_market_features}} green market features (out of {{total_number_of_market_features}})</p>
-				<p>{{number_of_passed_tests}} green tests (out of {{total_number_of_tests}})</p>
-				{% if total_no_of_errors %}
-				<div id='failures'>
-				  <p> {{total_no_of_errors}} <a href=#err_id>failed test(s)</a></p>
-				 </div>
-				 {% endif%}
-			   </div>
-			   {% if total_exceptions %}
-               				<div id='failures'>
-               				  <p> {{total_exceptions}} total exceptions</p>
-               				 </div>
-               				 {% endif%}
-               			   </div>
+			<div class="rTable"> <div class="rTableRow"> <div class="rTableHead">
+				<strong>Market Features</strong></div>
+				<div class="rTableHead">
+				<span style="font-weight: bold">Total Tests</span></div>
+				<div class="rTableHead"><span style="font-weight: bold">Passes</span></div>
+				{% if total_no_of_fail_tests %}
+					<div class="rTableHeadFailed"><span style="font-weight: bold">Failed</span></div>
+				{% else%}
+					<div class="rTableHead"><span style="font-weight: bold">Failed</span></div>
+				{% endif %}
 
-		</div>
-	{% for result in results %} 
+				{% if total_exceptions %}
+					<div class="rTableHeadFailed"><span style="font-weight: bold">Errors</span></div></div>
+				{% else%}
+					<div class="rTableHead"><span style="font-weight: bold">Errors</span></div></div>
+				{% endif %}
+				<div class="rTableRow">
+					<div class="rTableCell">{{total_number_of_market_features}}</div>
+					<div class="rTableCell">{{total_number_of_tests}}</div>
+					<div class="rTableCell">{{number_of_passed_tests}}</div>
+					{% if total_no_of_fail_tests %}
+						<div class="rTableCellFailed"><a href=#err_id>{{total_no_of_fail_tests}}</a></div>
+					{% else%}
+						<div class="rTableCell">{{total_no_of_fail_tests}}</div>
+					{% endif %}
+
+					{% if total_exceptions %}
+               			<div class="rTableCellFailed"><a href=#exception>{{total_exceptions}}</a></div></div>
+                	{% else%}
+                		<div class="rTableCell">{{total_exceptions}}</div></div>
+                	{% endif %}
+			</div>
+	</div>
+	{% for result in results %}
 		<div class="market-feature">
 			<h2>
 				<span class="val">
@@ -149,8 +233,14 @@ body {
 				</ol>
 			</div>
 	{% endfor %}
-		</div>
+	</div>
 	{% endfor %}
-	</div>	
+	{% for exception in exceptions %}
+		  <div class='market_feature'>
+		      <div id ="exception">
+		        <p>Error # {{loop.index}}: {{exception}}</p>
+    	      </div>
+	      </div>
+	{% endfor %}
 </body>
 </html>

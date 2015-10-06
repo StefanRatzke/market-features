@@ -1,9 +1,9 @@
-import json
 import os
 import sys
+import traceback
+import nose
 from nose.plugins.base import Plugin
 import nose.plugins.base
-import traceback
 from jinja2 import Environment, FileSystemLoader
 
 
@@ -27,7 +27,13 @@ class MarketFeatures(Plugin):
         return "provide summery report of executed tests listed per market feature"
 
     def addError(self, test, err, capt=None):
-        self.exceptions['exceptions'].append(str(err))
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        t_len = traceback.format_exception(exc_type, exc_value,
+                                           exc_traceback).__len__() - 2
+        exception_msg = "{0} {1} {2}".format(str(exc_type.__name__), str(exc_value),
+                                             str(traceback.format_exception(exc_type, exc_value,
+                                                                            exc_traceback)[t_len]))
+        self.exceptions['exceptions'].append(str(exception_msg))
         self.report_test("test failed", test, err)
 
     def addFailure(self, test, err, capt=None, tb_info=None):
@@ -41,9 +47,10 @@ class MarketFeatures(Plugin):
         self.results['total_number_of_tests'] = self.__get_total_number_of_tests()
         self.results['number_of_passed_market_features'] = self.__get_number_of_passed_market_features()
         self.results['number_of_passed_tests'] = self.__get_number_of_passed_tests()
-        total_no_of_errors = self.__get_total_number_of_tests() - self.__get_number_of_passed_tests()
-        self.results['total_no_of_errors'] = total_no_of_errors
+        total_no_of_fail_tests = self.__get_total_number_of_tests() - self.__get_number_of_passed_tests()
+        self.results['total_no_of_fail_tests'] = total_no_of_fail_tests
         self.results['total_exceptions'] = len(self.exceptions['exceptions'])
+        self.results['exceptions'] = self.exceptions['exceptions']
         report = self.__render_template("market_features.html", self.results)
         with open("market_features.html", "w") as output_file:
             output_file.write(report)
@@ -68,6 +75,7 @@ class MarketFeatures(Plugin):
         else:
             result = {'name': market_feature, 'description': self.__extract_market_feature_description(test),
                       'tests': []}
+
             test = {'result': pre, 'name': str(address[1:]), 'message': message, 'err_msg': err_msg}
             result['tests'].append(test)
             self.results['results'].append(result)
@@ -119,11 +127,9 @@ class MarketFeatures(Plugin):
         env.filters['ignore_empty_elements'] = self.__ignore_empty_elements
         templates_path = os.path.dirname(os.path.abspath(__file__))
         env = Environment(loader=FileSystemLoader(templates_path))
-
-        print json.dumps(self.results['results'], indent=True)
-
         template = env.get_template(name + ".jinja")
         return template.render(data)
 
     def __ignore_empty_elements(self, list):
         return filter(None, list)
+
