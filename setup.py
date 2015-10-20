@@ -6,7 +6,7 @@ setup(
     author='Stefan Ratzke',
     author_email = 'stefan-ratzke@t-online.de',
     url = 'https://github.com/StefanRatzke/market-features',
-    download_url = 'https://github.com/StefanRatzke/market-features/tarball/0.1',
+    download_url = 'https://github.com/StefanRatzke/market-features/tarball/0.2',
     maintainer='Caleb Carvalho',
     maintainer_email='caleb.carvalho@gmail.com',
     packages=['market_features'],
