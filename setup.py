@@ -10,7 +10,7 @@ setup(
     maintainer='Stefan Ratzke, Caleb Carvalho',
     maintainer_email='caleb.carvalho@gmail.com',
     packages=['market_features'],
-    description = 'Create HTML Test Results Report',
+    description = 'nosetest plug in to Create HTML Test Results Report',
     license = '',
     entry_points = '''
         [nose.plugins.0.10]
