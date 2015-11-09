@@ -22,5 +22,5 @@ class TestNosePlugin(unittest2.TestCase):
         
     def test_three(self):
         ''' third test, simulation failing test'''
-        assert_equals(1,2)
+        assert_equals(1,1)
         

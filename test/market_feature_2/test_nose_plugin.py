@@ -18,5 +18,5 @@ class TestNosePlugin(unittest2.TestCase):
         assert_equals(1,1)
 
     def test_two(self):
-        assert_equals(1,1)
+        assert_equals(1,2)
         
