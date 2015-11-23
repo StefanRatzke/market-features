@@ -80,7 +80,7 @@ class MarketFeatures(Plugin):
                 break
         else:
             result = {'name': market_feature, 'description': self.__extract_market_feature_description(test),
-                      'tests': []}
+                      'status': None, 'tests': []}
             test = {'result': pre, 'name': str(address[1:]), 'message': message, 'err_msg': err_msg}
             result['tests'].append(test)
             self.results['results'].append(result)
@@ -113,10 +113,10 @@ class MarketFeatures(Plugin):
         for result in self.results['results']:
             for test in result['tests']:
                 if "failed" in test['result']:
-                    market = {'status': 'failed'}
-                    name = {'name': result['name']}
-                    self.failed_market['market_feature'].append(market)
-                    self.failed_market['market_feature'].append(name)
+                    # market = {'status': 'failed'}
+                    # self.failed_market['market_feature'].append(market)
+                    # # self.failed_market['market_feature'].append(name)
+                    result['status'] = 'failed'
                     break
             else:
                 number_of_passed_market_features += 1
@@ -138,11 +138,11 @@ class MarketFeatures(Plugin):
         env = Environment(loader=FileSystemLoader(templates_path))
         template = env.get_template(name + ".jinja")
 
-        print self.results['results'][1]['tests']
-        print len(self.results['results'])
-        # print self.results['market_feature']
-        # print json.dumps(self.results, indent=True)
-        print self.results['results'][0]
+        # print self.results['results'][1]['tests']
+        # print len(self.results['results'])
+        #
+        print json.dumps(self.results, indent=True)
+
         return template.render(data)
 
     def __ignore_empty_elements(self, list):
