@@ -577,11 +577,16 @@ jQuery.cookie = function(name, value, options) {
 <body>
 	<div id="container">
 		<div id="header">
+		<div class="time">Date : {{report_date_time}}</div>
 			<h1>C7 Functional Tests <strong><span class="total">{{total_number_of_tests}} total, </span>
 				{%if total_no_of_fail_tests %}<span class="failed">{{total_no_of_fail_tests}} failed</span>
 				 {% endif %}
 				 <span class="passed">{{number_of_passed_tests}} passed</span></strong>
-				 <span><class="time">{{time_summary}}</span>
+				 {% if total_exceptions %}
+                 	    <span><class="errors">1 error</span>
+                 {% else %}
+                 		<span><class="errors">0 error</span>
+                 {% endif %}
 				 </h1>
 
 			<div id="treecontrol">

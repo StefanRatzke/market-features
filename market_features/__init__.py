@@ -71,7 +71,8 @@ class MarketFeatures(Plugin):
         print "running", test.address()
 
     def finalize(self, result):
-        print dir(result)
+        now = datetime.datetime.now()
+        self.results['report_date_time'] = now.strftime("%Y-%m-%d %H:%M")
         self.results['total_number_of_market_features'] = self.__get_total_number_of_market_features()
         self.results['total_number_of_tests'] = self.__get_total_number_of_tests()
         self.results['number_of_passed_market_features'] = self.__get_number_of_passed_market_features()
@@ -153,7 +154,7 @@ class MarketFeatures(Plugin):
             timings = []
             for test in result['tests']:
                 timings.append(test['test_time'])
-            result['feature_time'] = round(sum(timings)/1000, 2)
+            result['feature_time'] = round(sum(timings) / 1000, 2)
             sum_of_features_update += round(sum(timings), 2)
         return sum_of_features_update
 
