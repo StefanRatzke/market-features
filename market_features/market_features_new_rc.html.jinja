@@ -126,6 +126,7 @@
             margin-top: 2.2em;
             margin-right: 3.4em;
             float: right;
+
           }
 
           #treecontrol {
@@ -238,8 +239,9 @@
           }
 
           #content ul li .time {
-            margin-right: .5em;
-            width: 5em;
+            margin-right: 5px;
+            width: 8em;
+            margin-left: 10px;
             text-align: right;
             font-size: 13px;
             color: #151515;
@@ -579,6 +581,7 @@ jQuery.cookie = function(name, value, options) {
 				{%if total_no_of_fail_tests %}<span class="failed">{{total_no_of_fail_tests}} failed</span>
 				 {% endif %}
 				 <span class="passed">{{number_of_passed_tests}} passed</span></strong>
+				 <span><class="time">{{time_summary}}</span>
 				 </h1>
 
 			<div id="treecontrol">
@@ -597,20 +600,20 @@ jQuery.cookie = function(name, value, options) {
 				<ul id="tree">
 					<li xmlns="" class="level top open">
 						<span><em class="time">
-							<div class="time">11.28 s</div>
+							<div class="time">{{time_summary}} s</div>
 					</em>C7 Functional Tests:</span>
 			{% for result in results %}
 			<ul>
 			{% if result.status == "failed" %}
-			            <li class="level suite failed open">
+			            <li class="level suite failed closed">
 			 <span><em class="time">
-              <div class="time">11.28 s</div>
+              <div class="time">{{result.feature_time}} s</div>
             </em>{{result.name}}
             </span>
             {% else %}
             	<li class="level suite close">
                 <span><em class="time">
-                <div class="time">11.28 s</div>
+                <div class="time">{{result.feature_time}} s</div>
                 </em>{{result.name}}
                 </span>
                 {% endif %}
@@ -626,7 +629,7 @@ jQuery.cookie = function(name, value, options) {
 
                 <li class="level test failed open">
                 <span><em class="time">
-                <div class="time">19 ms</div>
+                <div class="time">{{test.test_time}} ms</div>
                 </em><em class="status">{{test.result}}</em>{{test.message}}</span>
                 <ul>
 
@@ -642,7 +645,7 @@ jQuery.cookie = function(name, value, options) {
                 {% else %}
                 <li class="level test">
                                 <span><em class="time">
-                                <div class="time">3 ms</div>
+                                <div class="time">{{test.test_time}} ms</div>
                                 </em><em class="status">{{test.result}}</em>{{test.message}}</span>
 
                 {% endif %}
