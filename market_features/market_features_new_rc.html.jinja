@@ -588,9 +588,7 @@ jQuery.cookie = function(name, value, options) {
 				 {% endif %}
 				 <span class="passed">{{number_of_passed_tests}} passed</span></strong>
 				 {% if total_exceptions %}
-                 	    <span class="error">{{total_exceptions}} error</span>
-                 {% else %}
-                 		<span><class="errors">0 error</span>
+                 	    <span class="ignored">{{total_exceptions}} error</span>
                  {% endif %}
 				 </h1>
 
@@ -622,7 +620,7 @@ jQuery.cookie = function(name, value, options) {
             </span>
 
             {% elif result.status == "error" %}
-            			            <li class="level suite skipped closed">
+            			            <li class="level suite ignored closed">
             			 <span><em class="time">
                           <div class="time">{{result.feature_time}} s</div>
                         </em>{{result.name}}
