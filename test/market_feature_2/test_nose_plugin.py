@@ -1,4 +1,3 @@
-import time
 import unittest2
 from nose.plugins.attrib import attr
 from nose.tools import assert_equals
@@ -13,7 +12,6 @@ class TestNosePlugin(unittest2.TestCase):
         pass
 
     def test_one(self):
-        time.sleep(1)
         assert_equals(1, 1)
 
     def test_two(self):

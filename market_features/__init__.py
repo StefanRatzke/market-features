@@ -1,14 +1,12 @@
+import datetime
 import json
 import os
 import sys
 import traceback
-import datetime
-
 import nose
-from nose.plugins.base import Plugin
 import nose.plugins.base
 from jinja2 import Environment, FileSystemLoader
-import time
+from nose.plugins.base import Plugin
 
 
 class MarketFeatures(Plugin):
@@ -35,11 +33,10 @@ class MarketFeatures(Plugin):
     def startTest(self, test):
         address = test.address()
         message = test.shortDescription() if test.shortDescription() else str(address[-1]).split('.')[-1]
-        print "Starting ", test.shortDescription()
         self.starting_tests['timer'].append(message)
         self.feature_time = datetime.datetime.now()
 
-    def addError(self, test, err, capt=None):
+    def addError(self, test, err):
         end_time = datetime.datetime.now()
         report_test_time = end_time - self.feature_time
         t = report_test_time
@@ -50,25 +47,34 @@ class MarketFeatures(Plugin):
         exception_msg = "{0} {1} {2}".format(str(exc_type.__name__), str(exc_value),
                                              str(traceback.format_exception(exc_type, exc_value,
                                                                             exc_traceback)[t_len]))
-        self.exceptions['exceptions'].append(str(exception_msg))
-        self.report_test("test failed", test, err, round(milliseconds, 2))
 
-    def addFailure(self, test, err, capt=None, tb_info=None):
+        actual = str(traceback.format_exception(exc_type, exc_value,
+                                                exc_traceback)[t_len])
+        actual = actual.split(",", 1)
+
+        message = str(actual[0]).split('.')
+        market_feature = self.__extract_market_feature(message)
+        # message = message[0].rsplit('/', 1)[-1]
+        # self.exceptions['exceptions'].append(str(exc_value))
+        # self.exceptions['exceptions'].append(str(market_feature))
+        # self.exceptions['exceptions'].append(str(message))
+        self.exceptions['exceptions'].append(str(exception_msg))
+
+        self.report_test_exceptions(message, exception_msg, round(milliseconds, 2), 'test error')
+
+    def addFailure(self, test, err):
         end_time = datetime.datetime.now()
         report_test_time = end_time - self.feature_time
         t = report_test_time
         milliseconds = (t.days * 24 * 60 * 60 + t.seconds) * 1000 + t.microseconds / 1000.0
         self.report_test("test failed", test, err, round(milliseconds, 2))
 
-    def addSuccess(self, test, capt=None, error=None):
+    def addSuccess(self, test, error=None):
         end_time = datetime.datetime.now()
         report_test_time = end_time - self.feature_time
         t = report_test_time
         milliseconds = (t.days * 24 * 60 * 60 + t.seconds) * 1000 + t.microseconds / 1000.0
         self.report_test("test passed", test, error, round(milliseconds, 2))
-
-    def afterTest(self, test):
-        print "running", test.address()
 
     def finalize(self, result):
         now = datetime.datetime.now()
@@ -77,9 +83,9 @@ class MarketFeatures(Plugin):
         self.results['total_number_of_tests'] = self.__get_total_number_of_tests()
         self.results['number_of_passed_market_features'] = self.__get_number_of_passed_market_features()
         self.results['number_of_passed_tests'] = self.__get_number_of_passed_tests()
-        total_no_of_fail_tests = self.__get_total_number_of_tests() - self.__get_number_of_passed_tests()
+        total_no_of_fail_tests = self.__get_total_number_of_tests() - self.__get_number_of_passed_tests() - self.__get_total_number_of_errors()
         self.results['total_no_of_fail_tests'] = total_no_of_fail_tests
-        self.results['total_exceptions'] = len(self.exceptions['exceptions'])
+        self.results['total_exceptions'] = self.__get_total_number_of_errors()
         self.results['exceptions'] = self.exceptions['exceptions']
         self.results['time_summary'] = round(self.__get_total_feature_elapsed_time() / 1000, 2)
 
@@ -148,6 +154,16 @@ class MarketFeatures(Plugin):
                 number_of_passed_market_features += 1
         return number_of_passed_market_features
 
+    def __get_total_number_of_errors(self):
+        no_of_tests_with_errors = 0
+        for result in self.results['results']:
+            for test in result['tests']:
+                if "error" in test['result']:
+                    result['status'] = 'error'
+                    no_of_tests_with_errors += 1
+                    break
+        return no_of_tests_with_errors
+
     def __get_total_feature_elapsed_time(self):
         sum_of_features_update = 0
         for result in self.results['results']:
@@ -162,7 +178,7 @@ class MarketFeatures(Plugin):
         number_of_passed_tests = 0
         for result in self.results['results']:
             for test in result['tests']:
-                if "failed" not in test['result']:
+                if "passed" in test['result']:
                     number_of_passed_tests += 1
         return number_of_passed_tests
 
@@ -180,3 +196,20 @@ class MarketFeatures(Plugin):
 
     def __ignore_empty_elements(self, list):
         return filter(None, list)
+
+    def report_test_exceptions(self, address, err_msg, test_time, error_type=None):
+        market_feature = self.__extract_market_feature(address)
+        message = address[0].rsplit('/', 1)[-1]
+        for result in self.results['results']:
+            if result['name'] == market_feature:
+                test = {'result': error_type, 'name': address, 'message': message, 'err_msg': err_msg, 'test_time': test_time}
+                result['tests'].append(test)
+                break
+        else:
+            result = {'name': market_feature,
+                      # 'description': self.__extract_market_feature_description(address),
+                      'status': None, 'tests': [], 'feature_time': None}
+            test = {'result': error_type, 'name': address, 'message': message, 'err_msg': err_msg,
+                    'test_time': test_time}
+            result['tests'].append(test)
+            self.results['results'].append(result)
