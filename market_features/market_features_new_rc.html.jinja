@@ -612,19 +612,19 @@ jQuery.cookie = function(name, value, options) {
 					</em>C7 Functional Tests:</span>
 			{% for result in results %}
 			<ul>
-			{% if result.status == "failed" %}
-			            <li class="level suite failed closed">
-			 <span><em class="time">
-              <div class="time">{{result.feature_time}} s</div>
-            </em>{{result.name}}
-            </span>
 
-            {% elif result.status == "error" %}
+            {% if result.status == "error" %}
             			            <li class="level suite ignored closed">
             			 <span><em class="time">
                           <div class="time">{{result.feature_time}} s</div>
                         </em>{{result.name}}
                         </span>
+           {% elif result.status == "failed" %}
+           			            <li class="level suite failed closed">
+           			 <span><em class="time">
+                         <div class="time">{{result.feature_time}} s</div>
+                       </em>{{result.name}}
+                       </span>
 
             {% else %}
             	<li class="level suite close">

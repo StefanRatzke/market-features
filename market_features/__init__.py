@@ -59,8 +59,10 @@ class MarketFeatures(Plugin):
         # self.exceptions['exceptions'].append(str(market_feature))
         # self.exceptions['exceptions'].append(str(message))
         self.exceptions['exceptions'].append(str(exception_msg))
-
-        self.report_test_exceptions(message, exception_msg, round(milliseconds, 2), 'test error')
+        if isinstance(test, nose.case.Test):
+            self.report_test("test failed", test, err, round(milliseconds, 2))
+        else:
+            self.report_test_exceptions(message, exception_msg, round(milliseconds, 2), 'test error')
 
     def addFailure(self, test, err):
         end_time = datetime.datetime.now()
