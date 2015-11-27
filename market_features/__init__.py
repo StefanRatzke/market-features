@@ -53,7 +53,7 @@ class MarketFeatures(Plugin):
         actual = actual.split(",", 1)
 
         message = str(actual[0]).split('.')
-        market_feature = self.__extract_market_feature(message)
+
         # message = message[0].rsplit('/', 1)[-1]
         # self.exceptions['exceptions'].append(str(exc_value))
         # self.exceptions['exceptions'].append(str(market_feature))
@@ -204,14 +204,15 @@ class MarketFeatures(Plugin):
         message = address[0].rsplit('/', 1)[-1]
         for result in self.results['results']:
             if result['name'] == market_feature:
-                test = {'result': error_type, 'name': address, 'message': message, 'err_msg': err_msg, 'test_time': test_time}
+                test = {'result': error_type, 'name': address[0], 'message': message, 'err_msg': err_msg,
+                        'test_time': test_time}
                 result['tests'].append(test)
                 break
         else:
             result = {'name': market_feature,
                       # 'description': self.__extract_market_feature_description(address),
                       'status': None, 'tests': [], 'feature_time': None}
-            test = {'result': error_type, 'name': address, 'message': message, 'err_msg': err_msg,
+            test = {'result': error_type, 'name': address[0], 'message': message, 'err_msg': err_msg,
                     'test_time': test_time}
             result['tests'].append(test)
             self.results['results'].append(result)
