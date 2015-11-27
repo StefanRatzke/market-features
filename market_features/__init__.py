@@ -3,6 +3,7 @@ import json
 import os
 import sys
 import traceback
+
 import nose
 import nose.plugins.base
 from jinja2 import Environment, FileSystemLoader
@@ -51,13 +52,7 @@ class MarketFeatures(Plugin):
         actual = str(traceback.format_exception(exc_type, exc_value,
                                                 exc_traceback)[t_len])
         actual = actual.split(",", 1)
-
         message = str(actual[0]).split('.')
-
-        # message = message[0].rsplit('/', 1)[-1]
-        # self.exceptions['exceptions'].append(str(exc_value))
-        # self.exceptions['exceptions'].append(str(market_feature))
-        # self.exceptions['exceptions'].append(str(message))
         self.exceptions['exceptions'].append(str(exception_msg))
         if isinstance(test, nose.case.Test):
             self.report_test("test failed", test, err, round(milliseconds, 2))
@@ -79,14 +74,20 @@ class MarketFeatures(Plugin):
         self.report_test("test passed", test, error, round(milliseconds, 2))
 
     def finalize(self, result):
+        self.check_for_any_skipped_tests(result)
+
         now = datetime.datetime.now()
         self.results['report_date_time'] = now.strftime("%Y-%m-%d %H:%M")
         self.results['total_number_of_market_features'] = self.__get_total_number_of_market_features()
         self.results['total_number_of_tests'] = self.__get_total_number_of_tests()
         self.results['number_of_passed_market_features'] = self.__get_number_of_passed_market_features()
         self.results['number_of_passed_tests'] = self.__get_number_of_passed_tests()
-        total_no_of_fail_tests = self.__get_total_number_of_tests() - self.__get_number_of_passed_tests() - self.__get_total_number_of_errors()
+        total_skipped_tests = self.__get_number_of_skipped_tests()
+        total_no_of_fail_tests = \
+            self.__get_total_number_of_tests() - self.__get_number_of_passed_tests() \
+            - self.__get_total_number_of_errors() - total_skipped_tests
         self.results['total_no_of_fail_tests'] = total_no_of_fail_tests
+        self.results['total_no_of_skip_tests'] = total_skipped_tests
         self.results['total_exceptions'] = self.__get_total_number_of_errors()
         self.results['exceptions'] = self.exceptions['exceptions']
         self.results['time_summary'] = round(self.__get_total_feature_elapsed_time() / 1000, 2)
@@ -95,7 +96,17 @@ class MarketFeatures(Plugin):
         with open("market_features.html", "w") as output_file:
             output_file.write(report)
 
-    def report_test(self, pre, test, err, test_time):
+    def check_for_any_skipped_tests(self, result):
+        self.feature_time = datetime.datetime.now()
+        end_time = datetime.datetime.now()
+        report_test_time = end_time - self.feature_time
+        t = report_test_time
+        milliseconds = (t.days * 24 * 60 * 60 + t.seconds) * 1000 + t.microseconds / 1000.0
+        if result.skipped:
+            for rs in result.skipped:
+                self.report_test('test skipped', rs[0], err=None, test_time=round(milliseconds, 2), skip=str(rs[1]))
+
+    def report_test(self, pre, test, err=None, test_time=None, skip=None):
         if not isinstance(test, nose.case.Test):
             return
 
@@ -104,6 +115,8 @@ class MarketFeatures(Plugin):
             exc_type, exc_value, exc_traceback = sys.exc_info()
             err_msg = "{0} {1} {2}".format(str(exc_type.__name__), str(exc_value),
                                            str(traceback.format_tb(exc_traceback, 3)[1]))
+        if skip:
+            err_msg = skip
         address = test.address()
         message = test.shortDescription() if test.shortDescription() else str(address[-1]).split('.')[-1]
         market_feature = self.__extract_market_feature(address)
@@ -175,6 +188,15 @@ class MarketFeatures(Plugin):
             result['feature_time'] = round(sum(timings) / 1000, 2)
             sum_of_features_update += round(sum(timings), 2)
         return sum_of_features_update
+
+    def __get_number_of_skipped_tests(self):
+        number_of_skipped_tests = 0
+        for result in self.results['results']:
+            for test in result['tests']:
+                if "skipped" in test['result']:
+                    result['status'] = 'skipped'
+                    number_of_skipped_tests += 1
+        return number_of_skipped_tests
 
     def __get_number_of_passed_tests(self):
         number_of_passed_tests = 0

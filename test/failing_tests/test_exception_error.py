@@ -1,7 +1,5 @@
 import unittest2
-import nose
 from nose.plugins.attrib import attr
-import os, os.path
 from nose.tools import assert_equals
 
 
@@ -19,5 +17,5 @@ class TestNosePluginException(unittest2.TestCase):
         pass
 
     def test_next_one(self):
-        self.another_error()
+        # self.another_error()
         assert_equals(1, 1)

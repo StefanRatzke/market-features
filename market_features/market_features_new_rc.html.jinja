@@ -91,11 +91,11 @@
           }
 
           span.ignored {
-            color: #fff600
+            color: #fff600 {#d6b000  - used for skip#}
           }
 
           span.skipped {
-            color: #fff600
+            color:  #c0c0c0
           }
 
           hr {
@@ -198,6 +198,10 @@
             border-left: solid 15px #f8d216;
           }
 
+          #content ul li.level.suite.skipped > span {
+                      border-left: solid 15px #c0c0c0;
+                    }
+
           #content ul li.level.suite > ul {
             margin-bottom: 1.5em;
           }
@@ -218,6 +222,10 @@
             border-left: solid 6px #f8d216;
           }
 
+          #content ul li.level.test.skipped > span {
+                      border-left: solid 6px #c0c0c0;
+                    }
+
           #content ul li.text p, #content ul li.text span {
             margin-bottom: 1.5em;
             color: #151515 !important;
@@ -237,6 +245,16 @@
           #content ul li.text span.stderr {
             color: #8b0000 !important;
           }
+
+         #exception_id{
+            background-color: #f8d216;
+         }
+         #skip_id{
+                     background-color: #c0c0c0;
+                  }
+         #content ul li.text span.std {
+                     color: #000000 !important;
+                   }
 
           #content ul li.text span.stdout{
              color: #0046b0 !important;
@@ -271,6 +289,10 @@
           #content ul li.ignored > span .status {
             color: #d6b000;
           }
+
+          #content ul li.skipped > span .status {
+                      color: #c0c0c0;
+                    }
 
           #footer {
               height: 2em;
@@ -590,6 +612,9 @@ jQuery.cookie = function(name, value, options) {
 				 {% if total_exceptions %}
                  	    <span class="ignored">{{total_exceptions}} error</span>
                  {% endif %}
+                 {% if total_no_of_skip_tests %}
+                         <span class="skipped">{{total_no_of_skip_tests}} skip</span>
+                  {% endif %}
 				 </h1>
 
 			<div id="treecontrol">
@@ -626,6 +651,13 @@ jQuery.cookie = function(name, value, options) {
                        </em>{{result.name}}
                        </span>
 
+           {% elif result.status == "skipped" %}
+                 <li class="level suite skipped closed">
+                    <span><em class="time">
+                     <div class="time">{{result.feature_time}} s</div>
+                    </em>{{result.name}}
+                </span>
+
             {% else %}
             	<li class="level suite close">
                 <span><em class="time">
@@ -656,9 +688,9 @@ jQuery.cookie = function(name, value, options) {
                     <li class="text">
                         <span class="stderr">
                             <div id ='err_id'>
-                        <br/>{{test.err_msg}}
+                        {{test.err_msg}}
                      </div>
-                        <br/></span>
+                       </span>
                         </li>
                     </ul>
                     </li>
@@ -675,14 +707,35 @@ jQuery.cookie = function(name, value, options) {
                                                  </span>
                                          </li>
                                       <li class="text">
-                                          <span class="stderr">
-                                              <div id ='err_id'>
-                                          <br/>{{test.err_msg}}
+                                          <span class="std">
+                                              <div id ='exception_id'>
+                                                {{test.err_msg}}
                                        </div>
-                                          <br/></span>
+                                          </span>
                                           </li>
                                       </ul>
                                       </li>
+                {% elif test.result == "test skipped" %}
+
+                                                      <li class="level test skipped open">
+                                                      <span><em class="time">
+                                                      <div class="time">{{test.test_time}} ms</div>
+                                                      </em><em class="status">{{test.result}}</em>{{test.message}}</span>
+                                                      <ul>
+                                                       <li class="text">
+                                                           <span class="stdout">
+                                                                   {{test.name}}
+                                                                 </span>
+                                                         </li>
+                                                      <li class="text">
+                                                          <span class="std">
+                                                              <div id ='skip_id'>
+                                                                {{test.err_msg}}
+                                                       </div>
+                                                          </span>
+                                                          </li>
+                                                      </ul>
+                                                      </li>
                 {% else %}
                 <li class="level test">
                                 <span><em class="time">
