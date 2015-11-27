@@ -7,8 +7,7 @@ from nose.tools import assert_equals
 class TestNosePluginException(unittest2.TestCase):
     @classmethod
     def setUpClass(cls):
-        pass
-        # raise Exception("failing in loading test class")
+        raise Exception("failing in loading test class")
 
     def setUp(self):
         pass
@@ -17,5 +16,6 @@ class TestNosePluginException(unittest2.TestCase):
         pass
 
     def test_next_one(self):
-        # self.another_error()
+        """this test will not run due to setUpclass error"""
+        self.another_error_should_cause_error()
         assert_equals(1, 1)

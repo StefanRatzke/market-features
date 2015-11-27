@@ -10,7 +10,6 @@ class ElapseTimes(unittest2.TestCase):
     @classmethod
     def setUpClass(cls):
         pass
-        # raise Exception("failing in loading test class")
 
     def setUp(self):
         pass
