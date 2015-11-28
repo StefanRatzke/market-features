@@ -92,7 +92,7 @@ class MarketFeatures(Plugin):
         self.results['exceptions'] = self.exceptions['exceptions']
         self.results['time_summary'] = round(self.__get_total_feature_elapsed_time() / 1000, 2)
 
-        report = self.__render_template("market_features_new_rc.html", self.results)
+        report = self.__render_template("market_features.html", self.results)
         with open("market_features.html", "w") as output_file:
             output_file.write(report)
 
@@ -208,14 +208,10 @@ class MarketFeatures(Plugin):
 
     def __render_template(self, name, data):
         env = Environment(loader=FileSystemLoader(name))
-
         env.filters['ignore_empty_elements'] = self.__ignore_empty_elements
         templates_path = os.path.dirname(os.path.abspath(__file__))
         env = Environment(loader=FileSystemLoader(templates_path))
         template = env.get_template(name + ".jinja")
-
-        print json.dumps(self.results, indent=True)
-
         return template.render(data)
 
     def __ignore_empty_elements(self, list):
@@ -232,7 +228,6 @@ class MarketFeatures(Plugin):
                 break
         else:
             result = {'name': market_feature,
-                      # 'description': self.__extract_market_feature_description(address),
                       'status': None, 'tests': [], 'feature_time': None}
             test = {'result': error_type, 'name': address[0], 'message': message, 'err_msg': err_msg,
                     'test_time': test_time}
