@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Test Results &mdash; C7 Release 3.0</title>
+<title>Test Results &mdash; {{report_name}}</title>
 <style type="text/css">
           html {
             height: 100%
@@ -605,7 +605,7 @@ jQuery.cookie = function(name, value, options) {
 	<div id="container">
 		<div id="header">
 		<div class="time">Date : {{report_date_time}}</div>
-			<h1>C7 Functional Tests <strong><span class="total">{{total_number_of_tests}} total, </span>
+			<h1>{{report_name}} <strong><span class="total">{{total_number_of_tests}} total, </span>
 				{%if total_no_of_fail_tests %}<span class="failed">{{total_no_of_fail_tests}} failed</span>
 				 {% endif %}
 				 <span class="passed">{{number_of_passed_tests}} passed</span></strong>
@@ -634,12 +634,11 @@ jQuery.cookie = function(name, value, options) {
 					<li xmlns="" class="level top open">
 						<span><em class="time">
 							<div class="time">{{time_summary}} s</div>
-					</em>C7 Functional Tests:</span>
+					        </em>{{report_name}}:</span>
 			{% for result in results %}
 			<ul>
-
             {% if result.status == "error" %}
-            			            <li class="level suite ignored closed">
+        		      <li class="level suite ignored closed">
             			 <span><em class="time">
                           <div class="time">{{result.feature_time}} s</div>
                         </em>{{result.name}}

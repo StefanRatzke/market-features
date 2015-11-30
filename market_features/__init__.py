@@ -1,5 +1,4 @@
 import datetime
-import json
 import os
 import sys
 import traceback
@@ -8,6 +7,12 @@ import nose
 import nose.plugins.base
 from jinja2 import Environment, FileSystemLoader
 from nose.plugins.base import Plugin
+
+report_file_name = 'report_name.dat'
+if not os.path.exists(report_file_name):
+    print "creating empty report name file"
+    file_write = open(report_file_name, 'w+')
+    file_write.write("")
 
 
 class MarketFeatures(Plugin):
@@ -23,6 +28,11 @@ class MarketFeatures(Plugin):
         self.starting_tests = {'timer': []}
         self.feature_time = None
         self.test_time = None
+        with open(report_file_name, "r") as saved_file:
+            generate_report_name = saved_file.read().replace('\n', '')
+        self.report_file_name = generate_report_name
+        if not self.report_file_name:
+            self.report_file_name = "Functional Tests"
 
     @staticmethod
     def begin():
@@ -78,6 +88,7 @@ class MarketFeatures(Plugin):
 
         now = datetime.datetime.now()
         self.results['report_date_time'] = now.strftime("%Y-%m-%d %H:%M")
+        self.results['report_name'] = self.report_file_name
         self.results['total_number_of_market_features'] = self.__get_total_number_of_market_features()
         self.results['total_number_of_tests'] = self.__get_total_number_of_tests()
         self.results['number_of_passed_market_features'] = self.__get_number_of_passed_market_features()
