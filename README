@@ -3,4 +3,4 @@ nose-market-features
 
 A nosetests plugin to show tests grouped by market feature.
 
-- Show IntelliJ style Junit report for notests
+- Show IntelliJ style Junit report for nosetests
