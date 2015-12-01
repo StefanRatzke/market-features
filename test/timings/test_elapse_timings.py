@@ -1,18 +1,26 @@
+import time
+
 import unittest2
 from nose.plugins.attrib import attr
 from nose.tools import assert_equals
 
 
 @attr('test_nose_plugin')
-class TestNosePlugin(unittest2.TestCase):
+class ElapseTimes(unittest2.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        pass
+
     def setUp(self):
         pass
 
     def tearDown(self):
         pass
 
-    def test_one(self):
+    def test_wait_for_1_sec(self):
+        time.sleep(1)
         assert_equals(1, 1)
 
-    def test_two(self):
+    def test_wait_for_2_sec(self):
+        time.sleep(2)
         assert_equals(1, 1)

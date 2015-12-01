@@ -1,10 +1,18 @@
+import datetime
 import os
 import sys
 import traceback
+
 import nose
-from nose.plugins.base import Plugin
 import nose.plugins.base
 from jinja2 import Environment, FileSystemLoader
+from nose.plugins.base import Plugin
+
+report_file_name = 'report_name.dat'
+if not os.path.exists(report_file_name):
+    print "creating empty report name file"
+    file_write = open(report_file_name, 'w+')
+    file_write.write("")
 
 
 class MarketFeatures(Plugin):
@@ -14,10 +22,17 @@ class MarketFeatures(Plugin):
     name = 'market-features'
 
     def __init__(self):
-
         super(MarketFeatures, self).__init__()
         self.results = {"results": []}
         self.exceptions = {'exceptions': []}
+        self.starting_tests = {'timer': []}
+        self.feature_time = None
+        self.test_time = None
+        with open(report_file_name, "r") as saved_file:
+            generate_report_name = saved_file.read().replace('\n', '')
+        self.report_file_name = generate_report_name
+        if not self.report_file_name:
+            self.report_file_name = "Functional Tests"
 
     @staticmethod
     def begin():
@@ -26,36 +41,83 @@ class MarketFeatures(Plugin):
     def help(self):
         return "provide summery report of executed tests listed per market feature"
 
-    def addError(self, test, err, capt=None):
+    def startTest(self, test):
+        address = test.address()
+        message = test.shortDescription() if test.shortDescription() else str(address[-1]).split('.')[-1]
+        self.starting_tests['timer'].append(message)
+        self.feature_time = datetime.datetime.now()
+
+    def addError(self, test, err):
+        end_time = datetime.datetime.now()
+        report_test_time = end_time - self.feature_time
+        t = report_test_time
+        milliseconds = (t.days * 24 * 60 * 60 + t.seconds) * 1000 + t.microseconds / 1000.0
         exc_type, exc_value, exc_traceback = sys.exc_info()
         t_len = traceback.format_exception(exc_type, exc_value,
                                            exc_traceback).__len__() - 2
         exception_msg = "{0} {1} {2}".format(str(exc_type.__name__), str(exc_value),
                                              str(traceback.format_exception(exc_type, exc_value,
                                                                             exc_traceback)[t_len]))
+
+        actual = str(traceback.format_exception(exc_type, exc_value,
+                                                exc_traceback)[t_len])
+        actual = actual.split(",", 1)
+        message = str(actual[0]).split('.')
         self.exceptions['exceptions'].append(str(exception_msg))
-        self.report_test("test failed", test, err)
+        if isinstance(test, nose.case.Test):
+            self.report_test("test failed", test, err, round(milliseconds, 2))
+        else:
+            self.report_test_exceptions(message, exception_msg, round(milliseconds, 2), 'test error')
 
-    def addFailure(self, test, err, capt=None, tb_info=None):
-        self.report_test("test failed", test, err)
+    def addFailure(self, test, err):
+        end_time = datetime.datetime.now()
+        report_test_time = end_time - self.feature_time
+        t = report_test_time
+        milliseconds = (t.days * 24 * 60 * 60 + t.seconds) * 1000 + t.microseconds / 1000.0
+        self.report_test("test failed", test, err, round(milliseconds, 2))
 
-    def addSuccess(self, test, capt=None):
-        self.report_test("test passed", test, err=None)
+    def addSuccess(self, test, error=None):
+        end_time = datetime.datetime.now()
+        report_test_time = end_time - self.feature_time
+        t = report_test_time
+        milliseconds = (t.days * 24 * 60 * 60 + t.seconds) * 1000 + t.microseconds / 1000.0
+        self.report_test("test passed", test, error, round(milliseconds, 2))
 
     def finalize(self, result):
+        self.check_for_any_skipped_tests(result)
+
+        now = datetime.datetime.now()
+        self.results['report_date_time'] = now.strftime("%Y-%m-%d %H:%M")
+        self.results['report_name'] = self.report_file_name
         self.results['total_number_of_market_features'] = self.__get_total_number_of_market_features()
         self.results['total_number_of_tests'] = self.__get_total_number_of_tests()
         self.results['number_of_passed_market_features'] = self.__get_number_of_passed_market_features()
         self.results['number_of_passed_tests'] = self.__get_number_of_passed_tests()
-        total_no_of_fail_tests = self.__get_total_number_of_tests() - self.__get_number_of_passed_tests()
+        total_skipped_tests = self.__get_number_of_skipped_tests()
+        total_no_of_fail_tests = \
+            self.__get_total_number_of_tests() - self.__get_number_of_passed_tests() \
+            - self.__get_total_number_of_errors() - total_skipped_tests
         self.results['total_no_of_fail_tests'] = total_no_of_fail_tests
-        self.results['total_exceptions'] = len(self.exceptions['exceptions'])
+        self.results['total_no_of_skip_tests'] = total_skipped_tests
+        self.results['total_exceptions'] = self.__get_total_number_of_errors()
         self.results['exceptions'] = self.exceptions['exceptions']
+        self.results['time_summary'] = round(self.__get_total_feature_elapsed_time() / 1000, 2)
+
         report = self.__render_template("market_features.html", self.results)
         with open("market_features.html", "w") as output_file:
             output_file.write(report)
 
-    def report_test(self, pre, test, err):
+    def check_for_any_skipped_tests(self, result):
+        self.feature_time = datetime.datetime.now()
+        end_time = datetime.datetime.now()
+        report_test_time = end_time - self.feature_time
+        t = report_test_time
+        milliseconds = (t.days * 24 * 60 * 60 + t.seconds) * 1000 + t.microseconds / 1000.0
+        if result.skipped:
+            for rs in result.skipped:
+                self.report_test('test skipped', rs[0], err=None, test_time=round(milliseconds, 2), skip=str(rs[1]))
+
+    def report_test(self, pre, test, err=None, test_time=None, skip=None):
         if not isinstance(test, nose.case.Test):
             return
 
@@ -64,32 +126,38 @@ class MarketFeatures(Plugin):
             exc_type, exc_value, exc_traceback = sys.exc_info()
             err_msg = "{0} {1} {2}".format(str(exc_type.__name__), str(exc_value),
                                            str(traceback.format_tb(exc_traceback, 3)[1]))
+        if skip:
+            err_msg = skip
         address = test.address()
         message = test.shortDescription() if test.shortDescription() else str(address[-1]).split('.')[-1]
         market_feature = self.__extract_market_feature(address)
         for result in self.results['results']:
             if result['name'] == market_feature:
-                test = {'result': pre, 'name': str(address[1:]), 'message': message, 'err_msg': err_msg}
+                test = {'result': pre, 'name': str(address[1:]), 'message': message, 'err_msg': err_msg,
+                        'test_time': test_time}
                 result['tests'].append(test)
                 break
         else:
-            result = {'name': market_feature, 'description': self.__extract_market_feature_description(test),
-                      'tests': []}
-
-            test = {'result': pre, 'name': str(address[1:]), 'message': message, 'err_msg': err_msg}
+            result = {'name': market_feature,
+                      'description': self.__extract_market_feature_description(test),
+                      'status': None, 'tests': [], 'feature_time': None}
+            test = {'result': pre, 'name': str(address[1:]), 'message': message, 'err_msg': err_msg,
+                    'test_time': test_time}
             result['tests'].append(test)
             self.results['results'].append(result)
 
-    def __extract_market_feature_description(self, test):
+    @staticmethod
+    def __extract_market_feature_description(test):
         try:
             return sys.modules[sys.modules[test.context.__module__].__package__].__doc__
         except KeyError:
             return None
 
-    def __extract_market_feature(self, address):
+    @staticmethod
+    def __extract_market_feature(address):
         path = address[0]
-        snakecase_result = os.path.split(os.path.dirname(os.path.abspath(path)))[1]
-        split_result = snakecase_result.split('_')
+        snake_case_result = os.path.split(os.path.dirname(os.path.abspath(path)))[1]
+        split_result = snake_case_result.split('_')
         return ' '.join([word.capitalize() for word in split_result])
 
     def __get_total_number_of_market_features(self):
@@ -106,24 +174,51 @@ class MarketFeatures(Plugin):
         for result in self.results['results']:
             for test in result['tests']:
                 if "failed" in test['result']:
+                    result['status'] = 'failed'
                     break
             else:
                 number_of_passed_market_features += 1
-
         return number_of_passed_market_features
+
+    def __get_total_number_of_errors(self):
+        no_of_tests_with_errors = 0
+        for result in self.results['results']:
+            for test in result['tests']:
+                if "error" in test['result']:
+                    result['status'] = 'error'
+                    no_of_tests_with_errors += 1
+                    break
+        return no_of_tests_with_errors
+
+    def __get_total_feature_elapsed_time(self):
+        sum_of_features_update = 0
+        for result in self.results['results']:
+            timings = []
+            for test in result['tests']:
+                timings.append(test['test_time'])
+            result['feature_time'] = round(sum(timings) / 1000, 2)
+            sum_of_features_update += round(sum(timings), 2)
+        return sum_of_features_update
+
+    def __get_number_of_skipped_tests(self):
+        number_of_skipped_tests = 0
+        for result in self.results['results']:
+            for test in result['tests']:
+                if "skipped" in test['result']:
+                    result['status'] = 'skipped'
+                    number_of_skipped_tests += 1
+        return number_of_skipped_tests
 
     def __get_number_of_passed_tests(self):
         number_of_passed_tests = 0
         for result in self.results['results']:
             for test in result['tests']:
-                if "failed" not in test['result']:
+                if "passed" in test['result']:
                     number_of_passed_tests += 1
-
         return number_of_passed_tests
 
     def __render_template(self, name, data):
         env = Environment(loader=FileSystemLoader(name))
-
         env.filters['ignore_empty_elements'] = self.__ignore_empty_elements
         templates_path = os.path.dirname(os.path.abspath(__file__))
         env = Environment(loader=FileSystemLoader(templates_path))
@@ -133,3 +228,19 @@ class MarketFeatures(Plugin):
     def __ignore_empty_elements(self, list):
         return filter(None, list)
 
+    def report_test_exceptions(self, address, err_msg, test_time, error_type=None):
+        market_feature = self.__extract_market_feature(address)
+        message = address[0].rsplit('/', 1)[-1]
+        for result in self.results['results']:
+            if result['name'] == market_feature:
+                test = {'result': error_type, 'name': address[0], 'message': message, 'err_msg': err_msg,
+                        'test_time': test_time}
+                result['tests'].append(test)
+                break
+        else:
+            result = {'name': market_feature,
+                      'status': None, 'tests': [], 'feature_time': None}
+            test = {'result': error_type, 'name': address[0], 'message': message, 'err_msg': err_msg,
+                    'test_time': test_time}
+            result['tests'].append(test)
+            self.results['results'].append(result)
