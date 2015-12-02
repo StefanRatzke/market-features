@@ -2,15 +2,15 @@ from setuptools import setup
 
 setup(
     name='market-features',
-    version='0.2.1',
-    author='Stefan Ratzke',
+    version='0.3',
+    author='Stefan Ratzke, Caleb Carvalho',
     author_email = 'stefan-ratzke@t-online.de',
     url = 'https://github.com/StefanRatzke/market-features',
-    download_url = 'https://github.com/StefanRatzke/market-features/tarball/0.2.1',
+    download_url = 'https://github.com/StefanRatzke/market-features/tarball/0.3',
     maintainer='Stefan Ratzke, Caleb Carvalho',
     maintainer_email='caleb.carvalho@gmail.com',
     packages=['market_features'],
-    description = 'nosetest plug in to Create HTML Test Results Report',
+    description = 'nosetest plug in to Create IntelliJ Style HTML Test Results Report',
     license = '',
     entry_points = '''
         [nose.plugins.0.10]
