@@ -18,7 +18,6 @@ setup(
         ''',
     package_data={'market_features': ['market_features.html.jinja']},
     install_requires=['Jinja2 >=2.6, < 3.0'],
-    include_package_data=True,
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
