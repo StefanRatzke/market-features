@@ -1,4 +1,5 @@
 *.pyc
 market_feature.html
+report_name.dat
 *.*~
 dist/
