@@ -2,15 +2,16 @@ import datetime
 import os
 import sys
 import traceback
-
 import nose
 import nose.plugins.base
 from jinja2 import Environment, FileSystemLoader
 from nose.plugins.base import Plugin
+from os.path import expanduser
 
-report_file_name = 'report_name.dat'
+home = expanduser("~")
+report_file_name = home + '/.market_features/report_name.dat'
 if not os.path.exists(report_file_name):
-    print "creating empty report name file"
+    os.makedirs(home + '/.market_features/')
     file_write = open(report_file_name, 'w+')
     file_write.write("")
 
