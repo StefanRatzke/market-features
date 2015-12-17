@@ -2,18 +2,11 @@ import datetime
 import os
 import sys
 import traceback
+from os.path import expanduser
 import nose
 import nose.plugins.base
 from jinja2 import Environment, FileSystemLoader
 from nose.plugins.base import Plugin
-from os.path import expanduser
-
-home = expanduser("~")
-report_file_name = home + '/.market_features/report_name.dat'
-if not os.path.exists(report_file_name):
-    os.makedirs(home + '/.market_features/')
-    file_write = open(report_file_name, 'w+')
-    file_write.write("")
 
 
 class MarketFeatures(Plugin):
@@ -29,15 +22,26 @@ class MarketFeatures(Plugin):
         self.starting_tests = {'timer': []}
         self.feature_time = None
         self.test_time = None
-        with open(report_file_name, "r") as saved_file:
-            generate_report_name = saved_file.read().replace('\n', '')
-        self.report_file_name = generate_report_name
-        if not self.report_file_name:
-            self.report_file_name = "Functional Tests"
 
     @staticmethod
     def begin():
         print("begin")
+        MarketFeatures._check_report_name_file()
+
+    @staticmethod
+    def _check_report_name_file():
+        home = expanduser("~")
+        report_file_name = home + '/.market_features/report_name.dat'
+        if not os.path.exists(report_file_name):
+            if not os.path.dirname(home + '/.market_features/'):
+                os.makedirs(home + '/.market_features/')
+            file_write = open(report_file_name, 'w+')
+            file_write.write("")
+        with open(report_file_name, "r") as saved_file:
+            generate_report_name = saved_file.read().replace('\n', '')
+            MarketFeatures.report_file_name = generate_report_name
+        if not MarketFeatures.report_file_name:
+            MarketFeatures.report_file_name = "Functional Tests"
 
     def help(self):
         return "provide summery report of executed tests listed per market feature"
@@ -121,7 +125,6 @@ class MarketFeatures(Plugin):
     def report_test(self, pre, test, err=None, test_time=None, skip=None):
         if not isinstance(test, nose.case.Test):
             return
-
         err_msg = None
         if err:
             exc_type, exc_value, exc_traceback = sys.exc_info()
