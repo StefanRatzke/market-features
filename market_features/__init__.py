@@ -33,7 +33,7 @@ class MarketFeatures(Plugin):
         home = expanduser("~")
         report_file_name = home + '/.market_features/report_name.dat'
         if not os.path.exists(report_file_name):
-            if not os.path.dirname(home + '/.market_features/'):
+            if not os.path.isdir(home + '/.market_features/'):
                 os.makedirs(home + '/.market_features/')
             file_write = open(report_file_name, 'w+')
             file_write.write("")
