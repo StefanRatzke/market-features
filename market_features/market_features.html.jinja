@@ -788,20 +788,20 @@ jQuery.cookie = function(name, value, options) {
                                      </li>
                                  </ul>
                                </li>
-                  {% elif test.result == "test error" %}
-                                      <li class="level test ignored open">
-                                      <span><em class="time">
-                                      <div class="time">{{test.test_time}} ms</div>
-                                      </em><em class="status">{{test.result}}</em>{{test.message}}</span>
-                                      <ul>
-                                       <li class="text">
-                                           <span class="stdout">
-                                                   {{test.name}}
-                                                 </span>
-                                         </li>
-                                      <li class="text">
-                                          <span class="std">
-                                              <div id ='exception_id'>
+            {% elif test.result == "test error" %}
+                <li class="level test ignored open">
+                    <span><em class="time">
+                        <div class="time">{{test.test_time}} ms</div>
+                            </em><em class="status">{{test.result}}</em>{{test.message}}</span>
+                            <ul>
+                                <li class="text">
+                                    <span class="stdout">
+                                    {{test.name}}
+                                </span>
+                                </li>
+                            <li class="text">
+                                <span class="std">
+                                    <div id ='exception_id'>
                                                 {{test.err_msg}}
                                        </div>
                                           </span>
@@ -810,54 +810,51 @@ jQuery.cookie = function(name, value, options) {
                                       </li>
                 {% elif test.result == "test skipped" %}
 
-                                                      <li class="level test skipped open">
-                                                      <span><em class="time">
-                                                      <div class="time">{{test.test_time}} ms</div>
-                                                      </em><em class="status">{{test.result}}</em>{{test.message}}</span>
-                                                      <ul>
-                                                       <li class="text">
-                                                           <span class="stdout">
-                                                                   {{test.name}}
-                                                                 </span>
-                                                         </li>
-                                                      <li class="text">
-                                                          <span class="std">
-                                                              <div id ='skip_id'>
-                                                                {{test.err_msg}}
-                                                       </div>
-                                                          </span>
-                                                          </li>
-                                                      </ul>
-                                                      </li>
-                {% else %}
-                <li class="level test">
-                                <span><em class="time">
-                                <div class="time">{{test.test_time}} ms</div>
+                    <li class="level test skipped open">
+                        <span><em class="time">
+                            <div class="time">{{test.test_time}} ms</div>
                                 </em><em class="status">{{test.result}}</em>{{test.message}}</span>
                                 <ul>
-                                                <li class="text">
-                                                <span class="stdout">
-                                                    {{test.name}}
-                                                </span>
-                                                </li>
-                                                </ul>
-                                                </li>
-
+                                    <li class="text">
+                                        <span class="stdout">
+                                            {{test.name}}
+                                        </span>
+                                      </li>
+                                      <li class="text">
+                                        <span class="std">
+                                            <div id ='skip_id'>
+                                                {{test.err_msg}}
+                                                </div>
+                                         </span>
+                                         </li>
+                                </ul>
+                    </li>
+                {% else %}
+                    <li class="level test">
+                        <span><em class="time">
+                            <div class="time">{{test.test_time}} ms</div>
+                                </em><em class="status">{{test.result}}</em>{{test.message}}</span>
+                                <ul>
+                                 <li class="text">
+                                    <span class="stdout">
+                                        {{test.name}}
+                                    </span>
+                                  </li>
+                                  </ul>
+                                  </li>
                 {% endif %}
-                {% print result.status %}
-
 				{% endfor %}
-				</li>
-            	</ul>
+				        </li>
+            	    </ul>
                  </li>
                  </ul>
-              {% endfor %}
-              </li>
-              </ul>
-              </li>
-              </ul>
-              </li>
-              </div>
-              </div>
+                {% endfor %}
+                </li>
+             </ul>
+            </li>
+           </ul>
+          /li>
+        </div>
+    </div>
 </body>
 </html>
