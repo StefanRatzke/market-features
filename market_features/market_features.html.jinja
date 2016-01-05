@@ -187,7 +187,7 @@
             font-size: 110%;
             line-height: 1em;
             color: #151515;
-            border-left: solid 15px #93e078;
+            border-left: solid 14px #93e078;
           }
 
           #content ul li.level.suite.failed > span {
@@ -202,6 +202,57 @@
                       border-left: solid 15px #808080;
                     }
 
+           #bars span {
+             position: absolute;
+             display: block;
+             height: 15px;
+             width: 15px;
+           }
+
+           .firstOverlayLine {
+              left: 5.2%;
+              background: red;
+           }
+
+           .secondOverlayLine {
+              position: absolute;
+              left: 6.5%;
+              background: gray;
+           }
+
+           .skipOverlayLine {
+                         position: absolute;
+                         left: 5.2%;
+                         background: gray;
+                     }
+
+           .thirdOverlayLine {
+              left: 7.7%;
+              background: #f8d216;
+           }
+
+          #content ul li.level.suite.mixed_red_skip_fail > span {
+                margin-left: 3.7%;
+                border-left: solid 0px white;
+          }
+          #content ul li.level.suite.mixed_fail_error > span {
+          margin-left: 3.7%;
+          border-left: solid 0px white;
+          }
+
+          #content ul li.level.suite.mixed_skip_fail > span {
+                      margin-left: 2.3%;
+                      border-left: solid 0px white;
+          }
+
+          #content ul li.level.suite.mixed_fail_error > span {
+                       margin-left: 1.4%;
+                       border-left: solid 15px #f8d216;
+           }
+          #content ul li.level.suite.mixed_skipped_error > span {
+                        margin-left: 1.4%;
+                        border-left: solid 15px #f8d216;
+          }
           #content ul li.level.suite > ul {
             margin-bottom: 1.5em;
           }
@@ -656,45 +707,88 @@ jQuery.cookie = function(name, value, options) {
                      <div class="time">{{result.feature_time}} s</div>
                     </em>{{result.name}}
                 </span>
+           {% elif result.status == "failed and skipped" %}
+                  <li class="level suite mixed_skip_fail closed">
+                    <span><em class="time">
+                        <div class="time">{{result.feature_time}} s</div>
+                        </em>
+                         <div id="bars">
+                            <span class="firstOverlayLine"></span>
+                            <span class="secondOverlayLine"></span>
 
+                         </div>
+                        {{result.name}}
+                    </span>
+
+           {% elif result.status == "failed and error" %}
+                   <li class="level suite mixed_fail_error closed">
+                       <span><em class="time">
+                            <div class="time">{{result.feature_time}} s</div>
+                                </em>
+                                 <div id="bars">
+                                 <span class="firstOverlayLine"></span>
+                                 </div>
+                                {{result.name}}
+                        </span>
+           {% elif result.status == "skipped and error" %}
+                   <li class="level suite mixed_skipped_error closed">
+                        <span><em class="time">
+                            <div class="time">{{result.feature_time}} s</div>
+                            </em>
+                            <div id="bars">
+                              <span class="skipOverlayLine" ></span>
+                              </div>
+                             {{result.name}}
+                           </span>
+
+           {% elif result.status == "failed, error and skipped" %}
+                    <li class="level suite mixed_red_skip_fail closed">
+                        <span><em class="time">
+                            <div class="time">{{result.feature_time}} s</div>
+                            </em>
+                             <div id="bars">
+                              <span class="firstOverlayLine"></span>
+                              <span class="secondOverlayLine"></span>
+                              <span class="thirdOverlayLine"></span>
+                              </div>
+                            {{result.name}}
+                        </span>
             {% else %}
-            	<li class="level suite close">
-                <span><em class="time">
-                <div class="time">{{result.feature_time}} s</div>
-                </em>{{result.name}}
-                </span>
-                {% endif %}
+            	     <li class="level suite close">
+                        <span><em class="time">
+                            <div class="time">{{result.feature_time}} s</div>
+                            </em>{{result.name}}
+                        </span>
+            {% endif %}
 			<ul>
-
 			{% if result.description %}
             				<p>{{result.description}}</p>
             				</br>
-            	{% endif %}
-            {% for test in result.tests %}
-
-                {% if test.result == "test failed" %}
-
-                    <li class="level test failed open">
-                    <span><em class="time">
-                    <div class="time">{{test.test_time}} ms</div>
-                    </em><em class="status">{{test.result}}</em>{{test.message}}</span>
-                    <ul>
-                     <li class="text">
-                         <span class="stdout">
-                                 {{test.name}}
-                               </span>
-                       </li>
-                    <li class="text">
-                        <span class="stderr">
-                            <div id ='err_id'>
-                        {{test.err_msg}}
-                     </div>
-                       </span>
-                        </li>
-                    </ul>
-                    </li>
+            {% endif %}
+                {% for test in result.tests %}
+                        {% if test.result == "test failed" %}
+                               <li class="level test failed open">
+                                    <span><em class="time">
+                                        <div class="time">{{test.test_time}} ms</div>
+                                            </em>
+                                        <em class="status">{{test.result}}</em>{{test.message}}
+                                     </span>
+                                 <ul>
+                                    <li class="text">
+                                            <span class="stdout">
+                                                    {{test.name}}
+                                             </span>
+                                     </li>
+                                     <li class="text">
+                                        <span class="stderr">
+                                            <div id ='err_id'>
+                                                {{test.err_msg}}
+                                            </div>
+                                        </span>
+                                     </li>
+                                 </ul>
+                               </li>
                   {% elif test.result == "test error" %}
-
                                       <li class="level test ignored open">
                                       <span><em class="time">
                                       <div class="time">{{test.test_time}} ms</div>
@@ -750,6 +844,7 @@ jQuery.cookie = function(name, value, options) {
                                                 </li>
 
                 {% endif %}
+                {% print result.status %}
 
 				{% endfor %}
 				</li>
