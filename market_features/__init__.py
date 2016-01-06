@@ -3,6 +3,7 @@ import os
 import sys
 import traceback
 from os.path import expanduser
+
 import nose
 import nose.plugins.base
 from jinja2 import Environment, FileSystemLoader
@@ -54,6 +55,8 @@ class MarketFeatures(Plugin):
 
     def addError(self, test, err):
         end_time = datetime.datetime.now()
+        if not self.feature_time:
+            self.feature_time = end_time
         report_test_time = end_time - self.feature_time
         t = report_test_time
         milliseconds = (t.days * 24 * 60 * 60 + t.seconds) * 1000 + t.microseconds / 1000.0
@@ -90,7 +93,6 @@ class MarketFeatures(Plugin):
 
     def finalize(self, result):
         self.check_for_any_skipped_tests(result)
-
         now = datetime.datetime.now()
         self.results['report_date_time'] = now.strftime("%Y-%m-%d %H:%M")
         self.results['report_name'] = self.report_file_name
@@ -98,15 +100,20 @@ class MarketFeatures(Plugin):
         self.results['total_number_of_tests'] = self.__get_total_number_of_tests()
         self.results['number_of_passed_market_features'] = self.__get_number_of_passed_market_features()
         self.results['number_of_passed_tests'] = self.__get_number_of_passed_tests()
-        total_skipped_tests = self.__get_number_of_skipped_tests()
-        total_no_of_fail_tests = \
-            self.__get_total_number_of_tests() - self.__get_number_of_passed_tests() \
-            - self.__get_total_number_of_errors() - total_skipped_tests
-        self.results['total_no_of_fail_tests'] = total_no_of_fail_tests
-        self.results['total_no_of_skip_tests'] = total_skipped_tests
+        self.results['total_no_of_fail_tests'] = self.__get_number_of_failed_tests()
+        self.results['total_no_of_skip_tests'] = self.__get_number_of_skipped_tests()
         self.results['total_exceptions'] = self.__get_total_number_of_errors()
         self.results['exceptions'] = self.exceptions['exceptions']
         self.results['time_summary'] = round(self.__get_total_feature_elapsed_time() / 1000, 2)
+
+        all_status = check_valid_count(self._get_mixed_status())
+        for full_results in self.results["results"]:
+            for status in all_status:
+                if status:
+                    if full_results['name'] is status[0]:
+                        print status[0], '===', status[1]
+                        print full_results['name']
+                        full_results['status'] = status[1]
 
         report = self.__render_template("market_features.html", self.results)
         with open("market_features.html", "w") as output_file:
@@ -194,6 +201,19 @@ class MarketFeatures(Plugin):
                     break
         return no_of_tests_with_errors
 
+    def _get_mixed_status(self):
+        append_status = []
+        res_status = []
+        for result in self.results['results']:
+            for test in result['tests']:
+                if "passed" not in test['result']:
+                    res_status.append(test['result'])
+            res = {'name': result['name'], 'status': res_status}
+            res_status = []
+            append_status.append(res)
+
+        return append_status
+
     def __get_total_feature_elapsed_time(self):
         sum_of_features_update = 0
         for result in self.results['results']:
@@ -210,7 +230,9 @@ class MarketFeatures(Plugin):
             for test in result['tests']:
                 if "skipped" in test['result']:
                     result['status'] = 'skipped'
-                    number_of_skipped_tests += 1
+                    break
+            else:
+                number_of_skipped_tests += 1
         return number_of_skipped_tests
 
     def __get_number_of_passed_tests(self):
@@ -220,6 +242,14 @@ class MarketFeatures(Plugin):
                 if "passed" in test['result']:
                     number_of_passed_tests += 1
         return number_of_passed_tests
+
+    def __get_number_of_failed_tests(self):
+        number_of_failed_tests = 0
+        for result in self.results['results']:
+            for test in result['tests']:
+                if "failed" in test['result']:
+                    number_of_failed_tests += 1
+        return number_of_failed_tests
 
     def __render_template(self, name, data):
         env = Environment(loader=FileSystemLoader(name))
@@ -248,3 +278,35 @@ class MarketFeatures(Plugin):
                     'test_time': test_time}
             result['tests'].append(test)
             self.results['results'].append(result)
+
+    @staticmethod
+    def check_status(status):
+        print "status", status.count('test failed')
+        if status.count('test failed') and status.count('test skipped') and status.count('test error') > 0:
+            return '3 mixed: failed, error and skipped'
+        if status.count('test failed') and status.count('test skipped') > 0:
+            return '2 mixed: failed and skipped'
+        if status.count('test failed') and status.count('test error') > 0:
+            return '2 mixed: failed and error'
+        if status.count('test error') and status.count('test skipped') > 0:
+            return '2 mixed: skipped and error'
+
+
+def _check_status(status):
+    if status['status'].count('test failed') and status['status'].count('test skipped') and status['status'].count(
+            'test error') > 0:
+        return status['name'], 'failed, error and skipped'
+    if status['status'].count('test failed') and status['status'].count('test skipped') > 0:
+        return status['name'], 'failed and skipped'
+    if status['status'].count('test failed') and status['status'].count('test error') > 0:
+        return status['name'], 'failed and error'
+    if status['status'].count('test error') and status['status'].count('test skipped') > 0:
+        return status['name'], 'skipped and error'
+
+
+def validate_mix_status_count(x):
+    return _check_status(x)
+
+
+def check_valid_count(mixed_status):
+    return map(lambda x: validate_mix_status_count(x), mixed_status)

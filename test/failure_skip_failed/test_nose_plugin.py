@@ -15,12 +15,9 @@ class TestNosePlugin(unittest2.TestCase):
 
     def test_one(self):
         """first test, simulation passing test"""
-        assert_equals(1, 1)
+        assert_equals(1, 2)
 
+    @skip('skip one and fail one')
     def test_one6(self):
         """first test, simulation passing test"""
-        assert_equals(1, 1)
-
-    def test_three(self):
-        """third test, simulation failing test"""
         assert_equals(1, 1)

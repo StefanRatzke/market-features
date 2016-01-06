@@ -11,9 +11,6 @@ class TestNosePluginNext(unittest2.TestCase):
     def setUpClass(cls):
         pass
 
-    def setUp(self):
-        raise Exception("failing in loading test class")
-
     def tearDown(self):
         pass
 
