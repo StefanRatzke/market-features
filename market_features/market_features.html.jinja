@@ -182,6 +182,7 @@
 
           #content ul li.level.suite > span {
             margin-bottom: .8em;
+            {#padding: 0 0 0 .8em;#}
             padding: 0 0 0 .8em;
             display: block;
             font-size: 110%;
@@ -203,48 +204,48 @@
                     }
 
            #bars span {
-             position: fixed;
+             position: absolute;
              display: block;
              height: 15px;
              width: 15px;
            }
 
            .firstOverlayLine {
-             position: fixed;
-              left: 5.2%;
+             left: 0.5em;
               background: red;
+
            }
 
            .secondOverlayLine {
-              position: fixed;
-              left: 6.5%;
+              left: 2em;
               background: gray;
            }
 
            .skipOverlayLine {
-                         position: fixed;
-                         left: 5.2%;
+                         left: 0.5em;
                          background: gray;
                      }
 
            .thirdOverlayLine {
-              position: absolute;
               left: 7.7%;
               background: #f8d216;
            }
 
           #content ul li.level.suite.mixed_fail_skip_error > span {
-                margin-left: 3.7%;
+                padding: 0 0 0 3.8em;
                 border-left: solid 15px #f8d216;
+                position:relative;
+
           }
           #content ul li.level.suite.mixed_fail_error > span {
           margin-left: 3.7%;
-          border-left: solid 0px white;
+          border-left: solid 15px #f8d216;
           }
 
           #content ul li.level.suite.mixed_skip_fail > span {
-                      margin-left: 2.3%;
+                      padding: 0 0 0 3em;
                       border-left: solid 15px gray;
+                      position:relative;
           }
 
           #content ul li.level.suite.mixed_fail_error > span {
@@ -252,8 +253,9 @@
                        border-left: solid 15px #f8d216;
            }
           #content ul li.level.suite.mixed_skipped_error > span {
-                        margin-left: 2.3%;
+                        padding: 0 0 0 3em;
                         border-left: solid 15px #f8d216;
+                        position:relative;
           }
           #content ul li.level.suite > ul {
             margin-bottom: 1.5em;
