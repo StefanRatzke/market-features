@@ -203,37 +203,39 @@
                     }
 
            #bars span {
-             position: absolute;
+             position: fixed;
              display: block;
              height: 15px;
              width: 15px;
            }
 
            .firstOverlayLine {
+             position: fixed;
               left: 5.2%;
               background: red;
            }
 
            .secondOverlayLine {
-              position: absolute;
+              position: fixed;
               left: 6.5%;
               background: gray;
            }
 
            .skipOverlayLine {
-                         position: absolute;
+                         position: fixed;
                          left: 5.2%;
                          background: gray;
                      }
 
            .thirdOverlayLine {
+              position: absolute;
               left: 7.7%;
               background: #f8d216;
            }
 
-          #content ul li.level.suite.mixed_red_skip_fail > span {
+          #content ul li.level.suite.mixed_fail_skip_error > span {
                 margin-left: 3.7%;
-                border-left: solid 0px white;
+                border-left: solid 15px #f8d216;
           }
           #content ul li.level.suite.mixed_fail_error > span {
           margin-left: 3.7%;
@@ -242,7 +244,7 @@
 
           #content ul li.level.suite.mixed_skip_fail > span {
                       margin-left: 2.3%;
-                      border-left: solid 0px white;
+                      border-left: solid 15px gray;
           }
 
           #content ul li.level.suite.mixed_fail_error > span {
@@ -250,7 +252,7 @@
                        border-left: solid 15px #f8d216;
            }
           #content ul li.level.suite.mixed_skipped_error > span {
-                        margin-left: 1.4%;
+                        margin-left: 2.3%;
                         border-left: solid 15px #f8d216;
           }
           #content ul li.level.suite > ul {
@@ -714,7 +716,6 @@ jQuery.cookie = function(name, value, options) {
                         </em>
                          <div id="bars">
                             <span class="firstOverlayLine"></span>
-                            <span class="secondOverlayLine"></span>
 
                          </div>
                         {{result.name}}
@@ -742,14 +743,13 @@ jQuery.cookie = function(name, value, options) {
                            </span>
 
            {% elif result.status == "failed, error and skipped" %}
-                    <li class="level suite mixed_red_skip_fail closed">
+                    <li class="level suite mixed_fail_skip_error closed">
                         <span><em class="time">
                             <div class="time">{{result.feature_time}} s</div>
                             </em>
                              <div id="bars">
                               <span class="firstOverlayLine"></span>
                               <span class="secondOverlayLine"></span>
-                              <span class="thirdOverlayLine"></span>
                               </div>
                             {{result.name}}
                         </span>
