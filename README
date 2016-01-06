@@ -4,5 +4,3 @@ nose-market-features
 A nosetests plugin to show tests grouped by market feature.
 
 - Show IntelliJ style Junit report for nosetests
-
-![alt tag](https://raw.github.com/havanero/market-features/master/examples/enhanced_status.png) 
