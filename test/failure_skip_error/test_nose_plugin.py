@@ -15,3 +15,7 @@ class TestNosePlugin(unittest2.TestCase):
     def test_one6(self):
         """first test, simulation passing test"""
         assert_equals(1, 1)
+
+    def test_one_passed(self):
+        """first test, simulation passing test1"""
+        assert_equals(1, 1)
