@@ -1,0 +1,9 @@
+
+nose-market-features
+====================
+
+A nosetests plugin to show tests grouped by market feature.
+
+- Show IntelliJ style Junit report for nosetests
+
+<img src="https://raw.github.com/havanero/market-features/master/examples/enhanced_status.png" width="90%"></img> <img src="https://raw.github.com/havanero/market-features/master/examples/drill_down.png" width="90%"></img> 
