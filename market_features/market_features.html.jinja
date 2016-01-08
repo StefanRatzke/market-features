@@ -690,26 +690,26 @@ jQuery.cookie = function(name, value, options) {
 			{% for result in results %}
 			<ul>
             {% if result.status == "error" %}
-        		      <li class="level suite ignored closed">
+        		      <li class="level suite ignored closed" title="click to expand">
             			 <span><em class="time">
                           <div class="time">{{result.feature_time}} s</div>
                         </em>{{result.name}}
                         </span>
            {% elif result.status == "failed" %}
-           			            <li class="level suite failed closed">
+           			            <li class="level suite failed closed" title="click to expand">
            			 <span><em class="time">
                          <div class="time">{{result.feature_time}} s</div>
                        </em>{{result.name}}
                        </span>
 
            {% elif result.status == "skipped" %}
-                 <li class="level suite skipped closed">
+                 <li class="level suite skipped closed" title="click to expand">
                     <span><em class="time">
                      <div class="time">{{result.feature_time}} s</div>
                     </em>{{result.name}}
                 </span>
            {% elif result.status == "failed and skipped" %}
-                  <li class="level suite mixed_skip_fail closed">
+                  <li class="level suite mixed_skip_fail closed" title="click to expand">
                     <span><em class="time">
                         <div class="time">{{result.feature_time}} s</div>
                         </em>
@@ -721,7 +721,7 @@ jQuery.cookie = function(name, value, options) {
                     </span>
 
            {% elif result.status == "failed and error" %}
-                   <li class="level suite mixed_fail_error closed">
+                   <li class="level suite mixed_fail_error closed" title="click to expand">
                        <span><em class="time">
                             <div class="time">{{result.feature_time}} s</div>
                                 </em>
@@ -731,7 +731,7 @@ jQuery.cookie = function(name, value, options) {
                                 {{result.name}}
                         </span>
            {% elif result.status == "skipped and error" %}
-                   <li class="level suite mixed_skipped_error closed">
+                   <li class="level suite mixed_skipped_error closed" title="click to expand">
                         <span><em class="time">
                             <div class="time">{{result.feature_time}} s</div>
                             </em>
@@ -742,7 +742,7 @@ jQuery.cookie = function(name, value, options) {
                            </span>
 
            {% elif result.status == "failed, error and skipped" %}
-                    <li class="level suite mixed_fail_skip_error closed">
+                    <li class="level suite mixed_fail_skip_error closed" title="click to expand">
                         <span><em class="time">
                             <div class="time">{{result.feature_time}} s</div>
                             </em>
@@ -753,7 +753,7 @@ jQuery.cookie = function(name, value, options) {
                             {{result.name}}
                         </span>
             {% else %}
-            	     <li class="level suite close">
+            	     <li class="level suite close" title="click to expand">
                         <span><em class="time">
                             <div class="time">{{result.feature_time}} s</div>
                             </em>{{result.name}}

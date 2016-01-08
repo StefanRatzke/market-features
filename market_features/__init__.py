@@ -4,7 +4,6 @@ import sys
 import traceback
 from os.path import expanduser
 
-import nose
 import nose.plugins.base
 from jinja2 import Environment, FileSystemLoader
 from nose.plugins.base import Plugin
@@ -111,10 +110,7 @@ class MarketFeatures(Plugin):
             for status in all_status:
                 if status:
                     if full_results['name'] is status[0]:
-                        print status[0], '===', status[1]
-                        print full_results['name']
                         full_results['status'] = status[1]
-
         report = self.__render_template("market_features.html", self.results)
         with open("market_features.html", "w") as output_file:
             output_file.write(report)
@@ -198,7 +194,6 @@ class MarketFeatures(Plugin):
                 if "error" in test['result']:
                     result['status'] = 'error'
                     no_of_tests_with_errors += 1
-                    break
         return no_of_tests_with_errors
 
     def _get_mixed_status(self):
@@ -230,9 +225,7 @@ class MarketFeatures(Plugin):
             for test in result['tests']:
                 if "skipped" in test['result']:
                     result['status'] = 'skipped'
-                    break
-            else:
-                number_of_skipped_tests += 1
+                    number_of_skipped_tests += 1
         return number_of_skipped_tests
 
     def __get_number_of_passed_tests(self):
@@ -281,7 +274,6 @@ class MarketFeatures(Plugin):
 
     @staticmethod
     def check_status(status):
-        print "status", status.count('test failed')
         if status.count('test failed') and status.count('test skipped') and status.count('test error') > 0:
             return '3 mixed: failed, error and skipped'
         if status.count('test failed') and status.count('test skipped') > 0:
