@@ -13,9 +13,9 @@ class TestNosePlugin(unittest2.TestCase):
     def tearDown(self):
         pass
 
+    @skip('testing skipping')
     def test_one(self):
         assert_equals(1, 1)
 
-    @skip('test another skip')
     def test_two(self):
         assert_equals(1, 1)
