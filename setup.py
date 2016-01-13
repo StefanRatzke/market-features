@@ -2,11 +2,11 @@ from setuptools import setup
 
 setup(
     name='market-features',
-    version='0.3.9',
+    version='0.4',
     author='Stefan Ratzke, Caleb Carvalho',
     author_email='stefan-ratzke@t-online.de',
     url='https://github.com/StefanRatzke/market-features',
-    download_url='https://github.com/StefanRatzke/market-features/tarball/0.3.9',
+    download_url='https://github.com/StefanRatzke/market-features/tarball/0.4',
     maintainer='Stefan Ratzke, Caleb Carvalho',
     maintainer_email='caleb.carvalho@gmail.com',
     packages=['market_features'],
