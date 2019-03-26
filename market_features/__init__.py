@@ -117,7 +117,7 @@ class MarketFeatures(Plugin):
             output_file.write(report)
         # copy javascript / css in order to conform to Content-Security-Policy
         current_folder = os.path.dirname(os.path.realpath(__file__))
-        html_scripts = ["style.css", "packer.js", "treeview.js"]
+        html_scripts = ["style.css", "jquery-3.3.1.min.js", "treeview.js"]
         map(lambda scriptname : copyfile(current_folder + "/" + scriptname, scriptname), html_scripts)
 
     def check_for_any_skipped_tests(self, result):
