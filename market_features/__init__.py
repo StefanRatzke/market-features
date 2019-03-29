@@ -3,6 +3,7 @@ import os
 import sys
 import traceback
 from os.path import expanduser
+from shutil import copyfile
 
 import nose.plugins.base
 from jinja2 import Environment, FileSystemLoader
@@ -114,6 +115,10 @@ class MarketFeatures(Plugin):
         report = self.__render_template("market_features.html", self.results)
         with open("market_features.html", "w") as output_file:
             output_file.write(report)
+        # copy javascript / css in order to conform to Content-Security-Policy
+        current_folder = os.path.dirname(os.path.realpath(__file__))
+        html_scripts = ["style.css", "jquery-3.3.1.min.js", "treeview.js"]
+        map(lambda scriptname : copyfile(current_folder + "/" + scriptname, scriptname), html_scripts)
 
     def check_for_any_skipped_tests(self, result):
         self.feature_time = datetime.datetime.now()

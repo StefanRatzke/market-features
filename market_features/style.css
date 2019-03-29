@@ -1,0 +1,350 @@
+         html {
+            height: 100%
+          }
+
+          body {
+            margin: 0 auto;
+            padding: 0;
+            text-align: left;
+            height: 100%;
+            font-family: myriad, arial, tahoma, verdana, sans-serif;
+            color: #151515;
+            font-size: 90%;
+            line-height: 1.3em;
+            background-color: #fff;
+          }
+
+          * {
+            margin: 0;
+            padding: 0
+          }
+
+          .clr {
+            clear: both;
+            overflow: hidden;
+          }
+
+          img {
+            border: none
+          }
+
+          a {
+            color: #0046b0;
+            text-decoration: none;
+          }
+
+          a:hover {
+            text-decoration: none;
+          }
+
+          a:focus, a:active {
+            outline: none
+          }
+
+          .noborder {
+            border: none
+          }
+
+          h1 {
+            color: #151515;
+            font-size: 180%;
+            line-height: 1.1em;
+            font-weight: bold;
+          }
+
+          h2 {
+            color: #393D42;
+            font-size: 160%;
+            font-weight: normal
+          }
+
+          h3 {
+            font-size: 120%;
+            font-weight: bold;
+            margin-bottom: .5em
+          }
+
+          h4 {
+            font-size: 110%;
+          }
+
+          h5 {
+            font-size: 110%;
+          }
+
+          span.failed {
+            color: #ff0000
+          }
+
+          span.error {
+            color: Yellow
+          }
+
+          span.passed {
+            color: #1d9d01
+          }
+
+          span.ignored {
+            color: #fff600 {#d6b000  - used for skip#}
+          }
+
+          span.skipped {
+            color: #808080;
+          }
+
+          hr {
+            background-color: blue
+          }
+
+          #container {
+            min-width: 30em;
+          }
+
+          #header {
+            padding: 0;
+            position: fixed;
+            width: 100%;
+            z-index: 10;
+            background-color: #c7ceda;
+          }
+
+          #header h1 {
+            margin: 1em 3em 1em 1.7em;
+          }
+
+          #header h1 strong {
+            white-space: nowrap;
+          }
+
+          #header .time {
+            margin-top: 2.2em;
+            margin-right: 3.4em;
+            float: right;
+
+          }
+
+          #treecontrol {
+            margin: 0;
+            padding: .5em 3em .5em 0;
+            text-align: right;
+            background-color: #fff;
+          }
+
+          #treecontrol ul li {
+            display: inline;
+            list-style: none;
+            color: #666;
+          }
+
+          #content {
+            padding: 0 2.5em 2em 1.7em;
+          }
+
+          #content ul {
+            margin: .4em 0 .1em 2em;
+            list-style: none;
+          }
+
+          #content ul li.level {
+            cursor: pointer;
+          }
+
+          #content ul li.level span {
+            display: block;
+            font-weight: bold;
+          }
+
+          #content ul li.level.top {
+            margin-bottom: .3em;
+          }
+
+          #content ul li.level.top > span {
+            padding: .5em 0 .5em 1em;
+            font-size: 120%;
+            color: #151515;
+            background-color: #f2f2f2;
+            border-left: solid 10px #93e078;
+          }
+
+          #content ul li.level.top.failed > span {
+            border-left: solid 10px #f02525;
+          }
+
+          #content ul li.level.top.ignored > span {
+            border-left: solid 10px #f8d216;
+          }
+
+          #content ul li.level.suite > span {
+            margin-bottom: .8em;
+            {#padding: 0 0 0 .8em;#}
+            padding: 0 0 0 .8em;
+            display: block;
+            font-size: 110%;
+            line-height: 1em;
+            color: #151515;
+            border-left: solid 14px #93e078;
+          }
+
+          #content ul li.level.suite.failed > span {
+            border-left: solid 15px #f02525;
+          }
+
+          #content ul li.level.suite.ignored > span {
+            border-left: solid 15px #f8d216;
+          }
+
+          #content ul li.level.suite.skipped > span {
+                      border-left: solid 15px #808080;
+                    }
+
+           #bars span {
+             position: absolute;
+             display: block;
+             height: 15px;
+             width: 15px;
+           }
+
+           .firstOverlayLine {
+             left: 0.5em;
+              background: red;
+
+           }
+
+           .secondOverlayLine {
+              left: 2em;
+              background: gray;
+           }
+
+           .skipOverlayLine {
+                         left: 0.5em;
+                         background: gray;
+                     }
+
+           .thirdOverlayLine {
+              left: 7.7%;
+              background: #f8d216;
+           }
+
+          #content ul li.level.suite.mixed_fail_skip_error > span {
+                padding: 0 0 0 3.8em;
+                border-left: solid 15px #f8d216;
+                position:relative;
+
+          }
+          #content ul li.level.suite.mixed_fail_error > span {
+                padding: 0 0 0 2.0em;
+                border-left: solid 15px #f8d216;
+                position:relative;
+          }
+
+          #content ul li.level.suite.mixed_skip_fail > span {
+                      padding: 0 0 0 2.0em;
+                      border-left: solid 15px gray;
+                      position:relative;
+          }
+
+          #content ul li.level.suite.mixed_skipped_error > span {
+                        padding: 0 0 0 2.0em;
+                        border-left: solid 15px #f8d216;
+                        position:relative;
+          }
+          #content ul li.level.suite > ul {
+            margin-bottom: 1.5em;
+          }
+
+          #content ul li.level.test > span {
+            padding: .3em 0 .3em 1em;
+            color: #0046b0;
+            font-size: 100%;
+            border-left: solid 6px #93e078;
+            border-bottom: solid 1px #dbdbdb;
+          }
+
+          #content ul li.level.test.failed > span {
+            border-left: solid 6px #f02525;
+          }
+
+          #content ul li.level.test.ignored > span {
+            border-left: solid 6px #f8d216;
+          }
+
+          #content ul li.level.test.skipped > span {
+                      border-left: solid 6px #808080;
+                    }
+
+          #content ul li.text p, #content ul li.text span {
+            margin-bottom: 1.5em;
+            color: #151515 !important;
+            font-size: 90% !important;
+            font-weight: normal !important;
+            overflow-x: auto;
+            cursor: auto !important;
+            background: none !important;
+            border: none !important;
+          }
+
+          #content ul li.text span {
+            margin-bottom: 0;
+            display: block;
+          }
+
+          #content ul li.text span.stderr {
+            color: #8b0000 !important;
+          }
+
+         #exception_id{
+            background-color: #f8d216;
+         }
+         #skip_id{
+                     background-color: #c0c0c0;
+                  }
+         #content ul li.text span.std {
+                     color: #000000 !important;
+                   }
+
+          #content ul li.text span.stdout{
+             color: #0046b0 !important;
+           }
+
+          #content ul li .time {
+            margin-right: 5px;
+            width: 8em;
+            margin-left: 10px;
+            text-align: right;
+            font-size: 13px;
+            color: #151515;
+            font-style: normal;
+            font-weight: normal;
+            float: right;
+          }
+
+          #content ul li span .status {
+            width: 6em;
+            font-size: 90%;
+            color: #1d9d01;
+            font-style: normal;
+            font-weight: normal;
+            float: right;
+            text-align: right;
+          }
+
+          #content ul li.failed > span .status {
+            color: #ff0000;
+          }
+
+          #content ul li.ignored > span .status {
+            color: #d6b000;
+          }
+
+          #content ul li.skipped > span .status {
+                      color: #808080;
+                    }
+
+          #footer {
+              height: 2em;
+              background-color: #c7ceda;
+          }
+          #footer p {
+              padding: .4em 0 0 3.6em;
+              font-size: 80%;
+          }
