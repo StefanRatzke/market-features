@@ -16,7 +16,7 @@ setup(
         [nose.plugins.0.10]
         market_features = market_features:MarketFeatures
         ''',
-    package_data={'market_features': ['market_features.html.jinja']},
+    package_data={'market_features': ['market_features.html.jinja','style.css','jquery-3.3.1.min.js','treeview.js']},
     include_package_data=True,
     install_requires=['Jinja2 >=2.6, < 3.0'],
     classifiers=[
