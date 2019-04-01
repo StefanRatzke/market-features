@@ -1,3 +1,6 @@
 setup.py
 market_features/__init__.py
 market_features/market_features.html.jinja
+market_features/style.css
+market_features/jquery-3.3.1.min.js
+market_features/treeview.js
