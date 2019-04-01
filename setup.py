@@ -17,6 +17,7 @@ setup(
         market_features = market_features:MarketFeatures
         ''',
     package_data={'market_features': ['market_features.html.jinja']},
+    include_package_data=True,
     install_requires=['Jinja2 >=2.6, < 3.0'],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
