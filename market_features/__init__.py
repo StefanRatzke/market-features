@@ -118,7 +118,7 @@ class MarketFeatures(Plugin):
         # copy javascript / css in order to conform to Content-Security-Policy
         current_folder = os.path.dirname(os.path.realpath(__file__))
         html_scripts = ["style.css", "jquery-3.3.1.min.js", "treeview.js"]
-        map(lambda scriptname : copyfile(current_folder + "/" + scriptname, scriptname), html_scripts)
+        list(map(lambda scriptname : copyfile(current_folder + "/" + scriptname, scriptname), html_scripts))
 
     def check_for_any_skipped_tests(self, result):
         self.feature_time = datetime.datetime.now()
@@ -258,7 +258,7 @@ class MarketFeatures(Plugin):
         return template.render(data)
 
     def __ignore_empty_elements(self, list):
-        return filter(None, list)
+        return [_f for _f in list if _f]
 
     def report_test_exceptions(self, address, err_msg, test_time, error_type=None):
         market_feature = self.__extract_market_feature(address)
@@ -306,4 +306,4 @@ def validate_mix_status_count(x):
 
 
 def check_valid_count(mixed_status):
-    return map(lambda x: validate_mix_status_count(x), mixed_status)
+    return [validate_mix_status_count(x) for x in mixed_status]

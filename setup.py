@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='market-features',
-    version='0.5.2',
+    version='0.5.3',
     author='Stefan Ratzke, Caleb Carvalho, Ralf Thaenert',
     author_email='stefan-ratzke@t-online.de',
     url='https://github.com/StefanRatzke/market-features',
@@ -26,8 +26,8 @@ setup(
         'Natural Language :: English',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Testing'
     ],
 )
