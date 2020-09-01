@@ -63,10 +63,12 @@ class MarketFeatures(Plugin):
         exc_type, exc_value, exc_traceback = sys.exc_info()
         t_len = traceback.format_exception(exc_type, exc_value,
                                            exc_traceback).__len__() - 2
-        exception_msg = "{0} {1} {2}".format(str(exc_type.__name__), str(exc_value),
+
+        exception_msg = "no exception found"
+        if exc_type :
+        	exception_msg = "{0} {1} {2}".format(str(exc_type.__name__), str(exc_value),
                                              str(traceback.format_exception(exc_type, exc_value,
                                                                             exc_traceback)[t_len]))
-
         actual = str(traceback.format_exception(exc_type, exc_value,
                                                 exc_traceback)[t_len])
         actual = actual.split(",", 1)

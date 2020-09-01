@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='market-features',
-    version='0.5.3',
+    version='0.5.4',
     author='Stefan Ratzke, Caleb Carvalho, Ralf Thaenert',
     author_email='stefan-ratzke@t-online.de',
     url='https://github.com/StefanRatzke/market-features',
