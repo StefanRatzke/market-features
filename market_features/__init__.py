@@ -65,14 +65,16 @@ class MarketFeatures(Plugin):
                                            exc_traceback).__len__() - 2
 
         exception_msg = "no exception found"
+        message = "no exception found"
         if exc_type :
         	exception_msg = "{0} {1} {2}".format(str(exc_type.__name__), str(exc_value),
                                              str(traceback.format_exception(exc_type, exc_value,
                                                                             exc_traceback)[t_len]))
-        actual = str(traceback.format_exception(exc_type, exc_value,
+        	actual = str(traceback.format_exception(exc_type, exc_value,
                                                 exc_traceback)[t_len])
-        actual = actual.split(",", 1)
-        message = str(actual[0]).split('.')
+	        actual = actual.split(",", 1)
+        	message = str(actual[0]).split('.')
+
         self.exceptions['exceptions'].append(str(exception_msg))
         if isinstance(test, nose.case.Test):
             self.report_test("test failed", test, err, round(milliseconds, 2))
@@ -135,11 +137,12 @@ class MarketFeatures(Plugin):
     def report_test(self, pre, test, err=None, test_time=None, skip=None):
         if not isinstance(test, nose.case.Test):
             return
-        err_msg = None
+        err_msg = "None"
         if err:
             exc_type, exc_value, exc_traceback = sys.exc_info()
-            err_msg = "{0} {1} {2}".format(str(exc_type.__name__), str(exc_value),
-                                           str(traceback.format_tb(exc_traceback, 3)[1]))
+            if exc_type :
+	            err_msg = "{0} {1} {2}".format(str(exc_type.__name__), str(exc_value),
+        	                                   str(traceback.format_tb(exc_traceback, 3)[1]))
         if skip:
             err_msg = skip
         address = test.address()
