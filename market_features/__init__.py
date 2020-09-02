@@ -141,8 +141,11 @@ class MarketFeatures(Plugin):
         if err:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             if exc_type :
-	            err_msg = "{0} {1} {2}".format(str(exc_type.__name__), str(exc_value),
+                err_msg = "{0} {1} {2}".format(str(exc_type.__name__), str(exc_value),
         	                                   str(traceback.format_tb(exc_traceback, 3)[1]))
+            else:
+                err_msg = err
+
         if skip:
             err_msg = skip
         address = test.address()
